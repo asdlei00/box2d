@@ -20,7 +20,8 @@
 #define TEST_H
 
 #include <Box2D/Box2D.h>
-#include "Render.h"
+//#include "Render.h"
+#include "Build/vs2010/TestbedWinRT/RenderWinRT.h"
 
 #include <cstdlib>
 

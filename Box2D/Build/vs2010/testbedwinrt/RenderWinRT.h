@@ -1,18 +1,20 @@
 #pragma once
 
 #include <Box2D/Box2D.h>
+#include <d3d11.h>
 
 struct b2AABB;
 namespace DirectX {
 struct VertexPositionColor;
 template <typename T> class PrimitiveBatch;
 class CommonStates;
+class BasicEffect;
 }
 
 class DebugDraw : public b2Draw
 {
 public:
-	DebugDraw(DirectX::CommonStates &commonStates, DirectX::PrimitiveBatch<DirectX::VertexPositionColor> &renderer, ID3D11DeviceContext *d3dContext);
+	DebugDraw();
 
 	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color);
 
@@ -35,7 +37,8 @@ public:
     void DrawAABB(b2AABB* aabb, const b2Color& color);
 
 private:
-	DirectX::CommonStates &m_commonStates;
-	DirectX::PrimitiveBatch<DirectX::VertexPositionColor> &m_renderer;
+	DirectX::CommonStates *m_commonStates;
+	DirectX::BasicEffect *m_basicEffect;
+	DirectX::PrimitiveBatch<DirectX::VertexPositionColor> *m_renderer;
 	ID3D11DeviceContext *m_d3dContext;
 };

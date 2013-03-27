@@ -17,13 +17,13 @@
 */
 
 #include "../Framework/Test.h"
-#include "../Framework/Render.h"
+//#include "../Framework/Render.h"
 
-#ifdef __APPLE__
-	#include <GLUT/glut.h>
-#else
-	#include "freeglut/freeglut.h"
-#endif
+//#ifdef __APPLE__
+//	#include <GLUT/glut.h>
+//#else
+//	#include "freeglut/freeglut.h"
+//#endif
 
 #include <cstring>
 using namespace std;

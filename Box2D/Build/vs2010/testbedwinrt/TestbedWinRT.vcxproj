@@ -94,7 +94,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalDependencies>d2d1.lib;d3d11.lib;dxgi.lib;ole32.lib;windowscodecs.lib;dwrite.lib;DirectXTK\Bin\Desktop_2012\Win32\Debug\DirectXTK.lib;..\bin\Debug\Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d2d1.lib;d3d11.lib;dxgi.lib;ole32.lib;windowscodecs.lib;dwrite.lib;DirectXTK\Bin\Desktop_2012\Win32\Release\DirectXTK.lib;..\bin\Release\Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -120,6 +120,57 @@
     <Image Include="Assets\SplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Testbed\Framework\Test.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\AddPair.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\ApplyForce.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\BodyTypes.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Breakable.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Bridge.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\BulletTest.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Cantilever.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Car.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Chain.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\CharacterCollision.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\CollisionFiltering.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\CollisionProcessing.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\CompoundShapes.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Confined.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\ContinuousTest.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\ConvexHull.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\ConveyorBelt.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\DistanceTest.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Dominos.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\DumpShell.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\DynamicTreeTest.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\EdgeShapes.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\EdgeTest.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Gears.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Mobile.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\MobileBalanced.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\MotorJoint.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\OneSidedPlatform.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Pinball.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\PolyCollision.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\PolyShapes.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Prismatic.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Pulleys.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Pyramid.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\RayCast.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Revolute.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Rope.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\RopeJoint.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\SensorTest.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\ShapeEditing.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\SliderCrank.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\SphereStack.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\TheoJansen.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Tiles.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\TimeOfImpact.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Tumbler.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\VaryingFriction.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\VaryingRestitution.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\VerticalStack.h" />
+    <ClInclude Include="..\..\..\Testbed\Tests\Web.h" />
     <ClInclude Include="RenderWinRT.h" />
     <ClInclude Include="TestbedWinRT.h" />
     <ClInclude Include="CubeRenderer.h" />
@@ -129,6 +180,14 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\Testbed\Framework\Test.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Testbed\Tests\TestEntries.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="RenderWinRT.cpp" />
     <ClCompile Include="TestbedWinRT.cpp" />
     <ClCompile Include="CubeRenderer.cpp" />

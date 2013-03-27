@@ -1,13 +1,19 @@
 #include "pch.h"
 #include "RenderWinRT.h"
 #include "CommonStates.h"
+#include "Effects.h"
 #include "PrimitiveBatch.h"
 #include "VertexTypes.h"
 #include <d3d11.h>
+#include "CubeRenderer.h"
 
-DebugDraw::DebugDraw(DirectX::CommonStates &commonStates, DirectX::PrimitiveBatch<DirectX::VertexPositionColor> &renderer, ID3D11DeviceContext *d3dContext)
-: m_commonStates(commonStates), m_renderer(renderer), m_d3dContext(d3dContext)
+DebugDraw::DebugDraw()
 {
+	CubeRenderer ^cubeRenderer = CubeRenderer::GetInstance();
+	m_commonStates = cubeRenderer->GetCommonStates();
+	m_basicEffect = cubeRenderer->GetBasicEffect();
+	m_renderer = cubeRenderer->GetBatchDrawer();
+	m_d3dContext = cubeRenderer->GetDeviceContext();
 }
 
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
@@ -35,35 +41,30 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
 	currentProcessedVertex->position.x = vertices->x;
 	currentProcessedVertex->position.y = vertices->y;
 	currentProcessedVertex->position.z = 0;
-	m_renderer.Begin();
-	m_renderer.Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, processedVertices, totalVertexCount);
-	m_renderer.End();
+	m_renderer->Begin();
+	m_renderer->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, processedVertices, totalVertexCount);
+	m_renderer->End();
 	delete [] processedVertices;
-	//glColor3f(color.r, color.g, color.b);
-	//glBegin(GL_LINE_LOOP);
-	//for (int32 i = 0; i < vertexCount; ++i)
-	//{
-	//	glVertex2f(vertices[i].x, vertices[i].y);
-	//}
-	//glEnd();
 }
 
 void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
 {
-	m_d3dContext->OMSetBlendState(m_commonStates.AlphaBlend(), NULL, 0xffffffff);
-	m_renderer.Begin();
+	m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), NULL, 0xffffffff);
+	m_basicEffect->SetAlpha(0.5f);
+	m_renderer->Begin();
 	DirectX::VertexPositionColor firstProcessedVertex(DirectX::XMFLOAT3(vertices->x, vertices->y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 0.5f));
 	const b2Vec2 *currentVertex = vertices + 1;
 	for(int32 i = 2; i < vertexCount; ++i)
 	{
-		DirectX::VertexPositionColor processedVertex1(DirectX::XMFLOAT3(currentVertex->x, currentVertex->y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 1));
+		DirectX::VertexPositionColor processedVertex1(DirectX::XMFLOAT3(currentVertex->x, currentVertex->y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 0.5f));
 		++currentVertex;
-		DirectX::VertexPositionColor processedVertex2(DirectX::XMFLOAT3(currentVertex->x, currentVertex->y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 1));
-		m_renderer.DrawTriangle(firstProcessedVertex, processedVertex1, processedVertex2);
+		DirectX::VertexPositionColor processedVertex2(DirectX::XMFLOAT3(currentVertex->x, currentVertex->y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 0.5f));
+		m_renderer->DrawTriangle(firstProcessedVertex, processedVertex1, processedVertex2);
 	}
-	m_renderer.End();
+	m_renderer->End();
 
-	m_d3dContext->OMSetBlendState(m_commonStates.Opaque(), NULL, 0xffffffff);
+	m_d3dContext->OMSetBlendState(m_commonStates->Opaque(), NULL, 0xffffffff);
+	m_basicEffect->SetAlpha(1);
 	DrawPolygon(vertices, vertexCount, color);
 	//glEnable(GL_BLEND);
 	//glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -87,7 +88,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 
 void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color)
 {
-	m_renderer.Begin();
+	m_renderer->Begin();
 	for(int32 i = 0; i < 16; ++i)
 	{
 		float theta = b2_pi / 8.0f * i;
@@ -96,41 +97,31 @@ void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& 
 		theta = b2_pi / 8.0f * (i + 1);
 		v = center + radius * b2Vec2(cosf(theta), sinf(theta));
 		DirectX::VertexPositionColor processedVertex1(DirectX::XMFLOAT3(v.x, v.y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 1));
-		m_renderer.DrawLine(processedVertex0, processedVertex1);
+		m_renderer->DrawLine(processedVertex0, processedVertex1);
 	}
-	m_renderer.End();
-	//const float32 k_segments = 16.0f;
-	//const float32 k_increment = 2.0f * b2_pi / k_segments;
-	//float32 theta = 0.0f;
-	//glColor3f(color.r, color.g, color.b);
-	//glBegin(GL_LINE_LOOP);
-	//for (int32 i = 0; i < k_segments; ++i)
-	//{
-	//	b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-	//	glVertex2f(v.x, v.y);
-	//	theta += k_increment;
-	//}
-	//glEnd();
+	m_renderer->End();
 }
 
 void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
 {
-	m_d3dContext->OMSetBlendState(m_commonStates.AlphaBlend(), NULL, 0xffffffff);
-	DirectX::VertexPositionColor processedVertex0(DirectX::XMFLOAT3(center.x, center.y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 0.0f));
-	m_renderer.Begin();
+	m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), NULL, 0xffffffff);
+	m_basicEffect->SetAlpha(0.5f);
+	DirectX::VertexPositionColor processedVertex0(DirectX::XMFLOAT3(center.x, center.y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 0.5f));
+	m_renderer->Begin();
 	for(int32 i = 0; i < 16; ++i)
 	{
 		float theta = b2_pi / 8.0f * i;
 		b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-		DirectX::VertexPositionColor processedVertex1(DirectX::XMFLOAT3(v.x, v.y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 0.0f));
+		DirectX::VertexPositionColor processedVertex1(DirectX::XMFLOAT3(v.x, v.y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 0.5f));
 		theta = b2_pi / 8.0f * (i + 1);
 		v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-		DirectX::VertexPositionColor processedVertex2(DirectX::XMFLOAT3(v.x, v.y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 0.0f));
-		m_renderer.DrawTriangle(processedVertex0, processedVertex1, processedVertex2);
+		DirectX::VertexPositionColor processedVertex2(DirectX::XMFLOAT3(v.x, v.y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 0.5f));
+		m_renderer->DrawTriangle(processedVertex0, processedVertex1, processedVertex2);
 	}
-	m_renderer.End();
+	m_renderer->End();
 	
-	m_d3dContext->OMSetBlendState(m_commonStates.Opaque(), NULL, 0xffffffff);
+	m_d3dContext->OMSetBlendState(m_commonStates->Opaque(), NULL, 0xffffffff);
+	m_basicEffect->SetAlpha(1);
 	DrawCircle(center, radius, color);
 
 	b2Vec2 p = center + radius * axis;
@@ -171,17 +162,12 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
 {
-	m_renderer.Begin();
-	m_renderer.DrawLine(
+	m_renderer->Begin();
+	m_renderer->DrawLine(
 		DirectX::VertexPositionColor(DirectX::XMFLOAT3(p1.x, p1.y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 1)),
 		DirectX::VertexPositionColor(DirectX::XMFLOAT3(p2.x, p2.y, 0), DirectX::XMFLOAT4(color.r, color.g, color.b, 1))
 	);
-	m_renderer.End();
-	//glColor3f(color.r, color.g, color.b);
-	//glBegin(GL_LINES);
-	//glVertex2f(p1.x, p1.y);
-	//glVertex2f(p2.x, p2.y);
-	//glEnd();
+	m_renderer->End();
 }
 
 void DebugDraw::DrawTransform(const b2Transform& xf)
@@ -189,17 +175,17 @@ void DebugDraw::DrawTransform(const b2Transform& xf)
 	b2Vec2 p1 = xf.p, p2;
 	const float32 k_axisScale = 10.0f;
 	p2 = p1 + k_axisScale * xf.q.GetXAxis();
-	m_renderer.Begin();
-	m_renderer.DrawLine(
+	m_renderer->Begin();
+	m_renderer->DrawLine(
 		DirectX::VertexPositionColor(DirectX::XMFLOAT3(p1.x, p1.y, 0), DirectX::XMFLOAT4(1, 0, 0, 1)),
 		DirectX::VertexPositionColor(DirectX::XMFLOAT3(p2.x, p2.y, 0), DirectX::XMFLOAT4(1, 0, 0, 1))
 	);
 	p2 = p1 + k_axisScale * xf.q.GetYAxis();
-	m_renderer.DrawLine(
+	m_renderer->DrawLine(
 		DirectX::VertexPositionColor(DirectX::XMFLOAT3(p1.x, p1.y, 0), DirectX::XMFLOAT4(0, 1, 0, 1)),
 		DirectX::VertexPositionColor(DirectX::XMFLOAT3(p2.x, p2.y, 0), DirectX::XMFLOAT4(0, 1, 0, 1))
 	);
-	m_renderer.End();
+	m_renderer->End();
 	//b2Vec2 p1 = xf.p, p2;
 	//const float32 k_axisScale = 0.4f;
 	//glBegin(GL_LINES);
@@ -225,20 +211,14 @@ void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color)
 	DirectX::XMFLOAT3 upperLeft(p.x - halfSize, p.y + halfSize, 0);
 	DirectX::XMFLOAT3 lowerRight(p.x + halfSize, p.y - halfSize, 0);
 	DirectX::XMFLOAT3 upperRight(p.x + halfSize, p.y + halfSize, 0);
-	m_renderer.Begin();
-	m_renderer.DrawQuad(
+	m_renderer->Begin();
+	m_renderer->DrawQuad(
 		DirectX::VertexPositionColor(lowerLeft, processedColor),
 		DirectX::VertexPositionColor(lowerRight, processedColor),
 		DirectX::VertexPositionColor(upperRight, processedColor),
 		DirectX::VertexPositionColor(upperLeft, processedColor)
 	);
-	m_renderer.End();
-	//glPointSize(size);
-	//glBegin(GL_POINTS);
-	//glColor3f(color.r, color.g, color.b);
-	//glVertex2f(p.x, p.y);
-	//glEnd();
-	//glPointSize(1.0f);
+	m_renderer->End();
 }
 
 void DebugDraw::DrawString(int x, int y, const char *string, ...)
@@ -312,14 +292,7 @@ void DebugDraw::DrawAABB(b2AABB* aabb, const b2Color& c)
 		DirectX::VertexPositionColor(upperLeft, processedColor),
 		DirectX::VertexPositionColor(lowerLeft, processedColor)
 	};
-	m_renderer.Begin();
-	m_renderer.Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertices, 5);
-	m_renderer.End();
-	//glColor3f(c.r, c.g, c.b);
-	//glBegin(GL_LINE_LOOP);
-	//glVertex2f(aabb->lowerBound.x, aabb->lowerBound.y);
-	//glVertex2f(aabb->upperBound.x, aabb->lowerBound.y);
-	//glVertex2f(aabb->upperBound.x, aabb->upperBound.y);
-	//glVertex2f(aabb->lowerBound.x, aabb->upperBound.y);
-	//glEnd();
+	m_renderer->Begin();
+	m_renderer->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertices, 5);
+	m_renderer->End();
 }
