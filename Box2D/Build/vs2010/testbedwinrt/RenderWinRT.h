@@ -9,6 +9,8 @@ struct VertexPositionColor;
 template <typename T> class PrimitiveBatch;
 class CommonStates;
 class BasicEffect;
+class SpriteBatch;
+class SpriteFont;
 }
 
 class DebugDraw : public b2Draw
@@ -40,5 +42,7 @@ private:
 	DirectX::CommonStates *m_commonStates;
 	DirectX::BasicEffect *m_basicEffect;
 	DirectX::PrimitiveBatch<DirectX::VertexPositionColor> *m_renderer;
+	DirectX::SpriteBatch *m_spriteBatch;
+	DirectX::SpriteFont *m_spriteFont;
 	ID3D11DeviceContext *m_d3dContext;
 };

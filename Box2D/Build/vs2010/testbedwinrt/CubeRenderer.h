@@ -6,6 +6,7 @@
 #include "PrimitiveBatch.h"
 #include "VertexTypes.h"
 #include "RenderWinRT.h"
+#include "SpriteFont.h"
 
 struct ModelViewProjectionConstantBuffer
 {
@@ -36,6 +37,8 @@ internal:
 	DirectX::CommonStates *GetCommonStates() { return m_commonStates.get(); }
 	DirectX::BasicEffect *GetBasicEffect() { return m_basicEffect.get(); }
 	DirectX::PrimitiveBatch<DirectX::VertexPositionColor> *GetBatchDrawer() { return m_batchDrawer.get(); }
+	DirectX::SpriteBatch *GetSpriteBatch() { return m_spriteBatch.get(); }
+	DirectX::SpriteFont *GetSpriteFont() { return m_spriteFont.get(); }
 	ID3D11DeviceContext *GetDeviceContext() { return m_d3dContext.Get(); }
 
 private:
@@ -47,5 +50,7 @@ private:
 	std::unique_ptr<DirectX::CommonStates> m_commonStates;
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batchDrawer;
+	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+	std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 };

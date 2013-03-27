@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CubeRenderer.h"
+#include "arial.inc"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -19,9 +20,12 @@ void CubeRenderer::CreateDeviceResources()
 
 	m_commonStates.reset(new DirectX::CommonStates(m_d3dDevice.Get()));
 	m_basicEffect.reset(new DirectX::BasicEffect(m_d3dDevice.Get()));
-	m_batchDrawer.reset(new DirectX::PrimitiveBatch<DirectX::VertexPositionColor>(m_d3dContext.Get()));
+	m_batchDrawer.reset(new DirectX::PrimitiveBatch<DirectX::VertexPositionColor>(m_d3dContext.Get(), 1 << 16, 1 << 16));
+	m_spriteBatch.reset(new DirectX::SpriteBatch(m_d3dContext.Get()));
+	m_spriteFont.reset(new DirectX::SpriteFont(m_d3dDevice.Get(), arial, sizeof(arial)));
 	
-	m_d3dContext->RSSetState(m_commonStates->CullNone());
+	m_d3dContext->RSSetState(m_commonStates->CullClockwise());
+	m_d3dContext->OMSetDepthStencilState(m_commonStates->DepthNone(), 0xffffffff);
 	m_basicEffect->SetLightingEnabled(false);
 	m_basicEffect->SetFogEnabled(false);
 	m_basicEffect->SetTextureEnabled(false);

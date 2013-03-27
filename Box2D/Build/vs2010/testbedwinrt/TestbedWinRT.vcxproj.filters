@@ -203,5 +203,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="TestbedWinRT_TemporaryKey.pfx" />
+    <None Include="arial.inc" />
   </ItemGroup>
 </Project>

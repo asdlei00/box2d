@@ -15,6 +15,8 @@ public:
 	virtual void Load(Platform::String^ entryPoint);
 	virtual void Run();
 	virtual void Uninitialize();
+	
+	static void Resize(int w, int h);
 
 protected:
 	// Event Handlers.
@@ -33,7 +35,6 @@ protected:
 	void OnKeyDown(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::KeyEventArgs^ args);
 
 private:
-	void Resize(int w, int h);
 
 	CubeRenderer^ m_renderer;
 	bool m_windowClosed;

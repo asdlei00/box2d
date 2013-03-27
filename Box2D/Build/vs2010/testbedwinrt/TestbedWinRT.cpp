@@ -447,8 +447,11 @@ void TestbedWinRT::OnResuming(Platform::Object^ sender, Platform::Object^ args)
 
 void TestbedWinRT::Resize(int w, int h)
 {
-	width = w;
-	height = h;
+	if(w && h)
+	{
+		width = w;
+		height = h;
+	}
 
 	float32 ratio = float32(tw) / float32(th);
 
@@ -459,7 +462,7 @@ void TestbedWinRT::Resize(int w, int h)
 	b2Vec2 upper = settings.viewCenter + extents;
 
 	// L/R/B/T
-	m_renderer->GetBasicEffect()->SetProjection(XMMatrixOrthographicOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1));
+	CubeRenderer::GetInstance()->GetBasicEffect()->SetProjection(XMMatrixOrthographicOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1));
 }
 
 IFrameworkView^ Direct3DApplicationSource::CreateView()
