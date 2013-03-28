@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box2D", "Box2D.vcxproj", "{98400D17-43A5-1A40-95BE-C53AC78E7694}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestbedWinRT", "TestbedWinRT\TestbedWinRT.vcxproj", "{E355B390-605A-44A0-B5C9-BFB0899019A7}"
 	ProjectSection(ProjectDependencies) = postProject
-		{98400D17-43A5-1A40-95BE-C53AC78E7694} = {98400D17-43A5-1A40-95BE-C53AC78E7694}
+		{36FD5955-D521-454C-8AA5-565A7AD75F12} = {36FD5955-D521-454C-8AA5-565A7AD75F12}
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {E0B52AE7-E160-4D32-BF3F-910B785E5A8E}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Windows8", "TestbedWinRT\DirectXTK\DirectXTK_Windows8.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box2DLib", "Box2DLib.vcxproj", "{36FD5955-D521-454C-8AA5-565A7AD75F12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,16 +21,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Debug|ARM.ActiveCfg = Debug|Win32
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Debug|Win32.ActiveCfg = Debug|Win32
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Debug|Win32.Build.0 = Debug|Win32
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Debug|x64.ActiveCfg = Debug|x64
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Debug|x64.Build.0 = Debug|x64
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Release|ARM.ActiveCfg = Release|Win32
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Release|Win32.ActiveCfg = Release|Win32
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Release|Win32.Build.0 = Release|Win32
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Release|x64.ActiveCfg = Release|x64
-		{98400D17-43A5-1A40-95BE-C53AC78E7694}.Release|x64.Build.0 = Release|x64
 		{E355B390-605A-44A0-B5C9-BFB0899019A7}.Debug|ARM.ActiveCfg = Debug|ARM
 		{E355B390-605A-44A0-B5C9-BFB0899019A7}.Debug|ARM.Build.0 = Debug|ARM
 		{E355B390-605A-44A0-B5C9-BFB0899019A7}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -61,6 +51,18 @@ Global
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|Win32.Build.0 = Release|Win32
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.ActiveCfg = Release|x64
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.Build.0 = Release|x64
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Debug|ARM.ActiveCfg = Debug|ARM
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Debug|ARM.Build.0 = Debug|ARM
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Debug|Win32.ActiveCfg = Debug|Win32
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Debug|Win32.Build.0 = Debug|Win32
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Debug|x64.ActiveCfg = Debug|x64
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Debug|x64.Build.0 = Debug|x64
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Release|ARM.ActiveCfg = Release|ARM
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Release|ARM.Build.0 = Release|ARM
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Release|Win32.ActiveCfg = Release|Win32
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Release|Win32.Build.0 = Release|Win32
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Release|x64.ActiveCfg = Release|x64
+		{36FD5955-D521-454C-8AA5-565A7AD75F12}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

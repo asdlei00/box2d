@@ -94,7 +94,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalDependencies>d2d1.lib;d3d11.lib;dxgi.lib;ole32.lib;windowscodecs.lib;dwrite.lib;DirectXTK\Bin\Windows8\Win32\$(Configuration)\DirectXTK.lib;..\bin\$(Configuration)\Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d2d1.lib;d3d11.lib;dxgi.lib;ole32.lib;windowscodecs.lib;dwrite.lib;DirectXTK\Bin\Windows8\Win32\$(Configuration)\DirectXTK.lib;..\bin\$(Configuration)\Box2DLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
