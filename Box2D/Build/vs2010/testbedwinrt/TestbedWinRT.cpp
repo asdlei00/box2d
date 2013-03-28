@@ -148,7 +148,9 @@ void TestbedWinRT::Run()
 			XMMATRIX identity = XMMatrixIdentity();
 			basicEffect->SetView(identity);
 			basicEffect->SetWorld(XMMatrixIdentity());
-			basicEffect->Apply(m_renderer->GetDeviceContext());
+
+			auto context = m_renderer->GetDeviceContext();
+			basicEffect->Apply(context);
 
 			b2Vec2 oldCenter = settings.viewCenter;
 			settings.hz = settingsHz;
@@ -167,7 +169,7 @@ void TestbedWinRT::Run()
 					viewport.MaxDepth = 1;
 					viewport.TopLeftX = j * viewportHeight * aspect;
 					viewport.TopLeftY = i * viewportHeight;
-					m_renderer->GetDeviceContext()->RSSetViewports(1, &viewport);
+					context->RSSetViewports(1, &viewport);
 					(*testIt)->Step(&settings);
 					if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
 					{
@@ -242,11 +244,13 @@ void TestbedWinRT::OnPointerPressed(CoreWindow^ sender, PointerEventArgs^ args)
 		b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
 		if (mod == VirtualKeyModifiers::Shift)
 		{
-			test->ShiftMouseDown(p);
+			if(test)
+				test->ShiftMouseDown(p);
 		}
 		else
 		{
-			test->MouseDown(p);
+			if(test)
+				test->MouseDown(p);
 		}
 	}
 	else if (mouseProperties->IsRightButtonPressed)
@@ -265,7 +269,8 @@ void TestbedWinRT::OnPointerReleased(CoreWindow^ sender, PointerEventArgs^ args)
 	{
 		VirtualKeyModifiers mod = args->KeyModifiers;
 		b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
-		test->MouseUp(p);
+		if(test)
+			test->MouseUp(p);
 	}
 	else if (button == PointerUpdateKind::RightButtonReleased)
 	{
@@ -277,7 +282,9 @@ void TestbedWinRT::OnPointerMoved(CoreWindow^ sender, PointerEventArgs^ args)
 {
 	Point position = args->CurrentPoint->Position;
 	b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
-	test->MouseMove(p);
+
+	if(test)
+		test->MouseMove(p);
 	
 	if (rMouseDown)
 	{
