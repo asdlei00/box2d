@@ -174,10 +174,10 @@ void TestbedWinRT::Run()
 						Resize(width, height);
 					}
 					++testIt;
-					if(!*testIt)
+					if(testIt == tests.end())
 						break;
 				}
-				if(!*testIt)
+				if(testIt == tests.end())
 					break;
 			}
 
