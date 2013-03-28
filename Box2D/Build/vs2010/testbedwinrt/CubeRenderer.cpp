@@ -109,31 +109,16 @@ void CubeRenderer::Render()
 		m_depthStencilView.Get()
 		);
 		
-	//m_basicEffect->SetView(XMLoadFloat4x4(&m_constantBufferData.view));
-	//m_basicEffect->SetWorld(XMLoadFloat4x4(&m_constantBufferData.model));
-	//m_basicEffect->Apply(m_d3dContext.Get());
 	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
 
-	//m_batchDrawer->Begin();
-	//m_batchDrawer->DrawLine(
-	//	VertexPositionColor(XMFLOAT3(0, 0, 0), XMFLOAT4(1, 0, 0, 1)),
-	//	VertexPositionColor(XMFLOAT3(100, 100, 0), XMFLOAT4(0, 1, 0, 1))
-	//	);
-	//m_batchDrawer->End();
-
-	//box2D renderer test cases
-	//DebugDraw m_box2dDrawer;
-	//m_box2dDrawer.DrawSegment(b2Vec2(10, 100), b2Vec2(30, 100), b2Color(1, 0.5f, 0));
-	//b2AABB aabb;
-	//aabb.lowerBound = b2Vec2(100, 200);
-	//aabb.upperBound = b2Vec2(120, 230);
-	//m_box2dDrawer.DrawAABB(&aabb, b2Color(0.2f, 0.2f, 1));
-	//m_box2dDrawer.DrawCircle(b2Vec2(200, 250), 20, b2Color(1, 0, 0));
-	//m_box2dDrawer.DrawPoint(b2Vec2(300, 400), 100, b2Color(0, 1, 0));
-	//m_box2dDrawer.DrawSolidCircle(b2Vec2(500, 100), 20, b2Vec2(2, 0), b2Color(1, 1, 0));
-	//m_box2dDrawer.DrawTransform(b2Transform(b2Vec2(100, 500), b2Rot(0)));
-	//b2Vec2 polygon[4] = { b2Vec2(50, 250), b2Vec2(70, 250), b2Vec2(70, 200), b2Vec2(40, 190) };
-	//m_box2dDrawer.DrawSolidPolygon(polygon, 4, b2Color(0.5f, 1, 1));
+	//D3D11_VIEWPORT viewport;
+	//viewport.TopLeftX = 10;
+	//viewport.TopLeftY = 100;
+	//viewport.Width = 200;
+	//viewport.Height = 300;
+	//viewport.MinDepth = 0;
+	//viewport.MaxDepth = 1;
+	//m_d3dContext->RSSetViewports(1, &viewport);
 }
 
 CubeRenderer ^CubeRenderer::GetInstance()

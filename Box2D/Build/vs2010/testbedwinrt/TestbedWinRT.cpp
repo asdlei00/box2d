@@ -29,6 +29,7 @@ namespace
 	int tw, th;
 	bool rMouseDown;
 	b2Vec2 lastp;
+	std::vector<Test*> tests;
 }
 
 static b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
@@ -121,7 +122,9 @@ void TestbedWinRT::SetWindow(CoreWindow^ window)
 	testSelection = testIndex;
 
 	entry = g_testEntries + testIndex;
-	test = entry->createFcn();
+	//test = entry->createFcn();
+	for(int i = 0; i < testCount; ++i)
+		tests.push_back(g_testEntries[i].createFcn());
 }
 
 void TestbedWinRT::Load(Platform::String^ entryPoint)
@@ -149,13 +152,36 @@ void TestbedWinRT::Run()
 
 			b2Vec2 oldCenter = settings.viewCenter;
 			settings.hz = settingsHz;
-			test->Step(&settings);
-			if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
+			//test->Step(&settings);
+			std::vector<Test*>::iterator testIt = tests.begin();
+			float aspect = (float)tw / th;
+			const float viewportHeight = 150;
+			for(unsigned i = 0; i < 5; ++i)
 			{
-				Resize(width, height);
+				for(unsigned j = 0; j < 10; ++j)
+				{
+					D3D11_VIEWPORT viewport;
+					viewport.Width = viewportHeight * aspect;
+					viewport.Height = viewportHeight;
+					viewport.MinDepth = 0;
+					viewport.MaxDepth = 1;
+					viewport.TopLeftX = j * viewportHeight * aspect;
+					viewport.TopLeftY = i * viewportHeight;
+					m_renderer->GetDeviceContext()->RSSetViewports(1, &viewport);
+					(*testIt)->Step(&settings);
+					if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
+					{
+						Resize(width, height);
+					}
+					++testIt;
+					if(!*testIt)
+						break;
+				}
+				if(!*testIt)
+					break;
 			}
 
-			test->DrawTitle(entry->name);
+			//test->DrawTitle(entry->name);
 
 			if (testSelection != testIndex)
 			{
@@ -390,24 +416,22 @@ void TestbedWinRT::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 		break;
 
 		// Press [ to prev test.
-	case 0xDB:
-		--testSelection;
-		if (testSelection < 0)
-		{
-			testSelection = testCount - 1;
-		}
-		//glui->sync_live();
-		break;
+	//case 0xDB:
+	//	--testSelection;
+	//	if (testSelection < 0)
+	//	{
+	//		testSelection = testCount - 1;
+	//	}
+	//	break;
 
 		// Press ] to next test.
-	case 0xDD:
-		++testSelection;
-		if (testSelection == testCount)
-		{
-			testSelection = 0;
-		}
-		//glui->sync_live();
-		break;
+	//case 0xDD:
+	//	++testSelection;
+	//	if (testSelection == testCount)
+	//	{
+	//		testSelection = 0;
+	//	}
+	//	break;
 		
 	default:
 		if (test)
