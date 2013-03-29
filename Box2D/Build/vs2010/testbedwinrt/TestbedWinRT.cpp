@@ -148,7 +148,9 @@ void TestbedWinRT::Run()
 			XMMATRIX identity = XMMatrixIdentity();
 			basicEffect->SetView(identity);
 			basicEffect->SetWorld(XMMatrixIdentity());
-			basicEffect->Apply(m_renderer->GetDeviceContext());
+
+			auto context = m_renderer->GetDeviceContext();
+			basicEffect->Apply(context);
 
 			settings.hz = settingsHz;
 			//test->Step(&settings);
@@ -282,6 +284,7 @@ void TestbedWinRT::OnPointerMoved(CoreWindow^ sender, PointerEventArgs^ args)
 {
 	Point position = args->CurrentPoint->Position;
 	b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
+
 	if(test)
 		test->MouseMove(p);
 	
