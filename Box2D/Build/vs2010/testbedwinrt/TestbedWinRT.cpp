@@ -156,34 +156,46 @@ void TestbedWinRT::Run()
 			//test->Step(&settings);
 			std::vector<Test*>::iterator testIt = tests.begin();
 			float aspect = (float)tw / th;
-			const float viewportHeight = 150;
-			m_renderer->GetBatchDrawer()->Begin();
+			float viewportHeight = height/5.0f;
+			float viewportWidth = width/10.0f;
+
+			if(viewportHeight < viewportWidth) {
+				viewportWidth = viewportHeight;
+			} else {
+				viewportHeight = viewportWidth;
+			}
+
 			for(unsigned i = 0; i < 5; ++i)
 			{
 				for(unsigned j = 0; j < 10; ++j)
 				{
+					m_renderer->GetBatchDrawer()->Begin();
 					D3D11_VIEWPORT viewport;
-					viewport.Width = viewportHeight * aspect;
+					viewport.Width = viewportWidth;
 					viewport.Height = viewportHeight;
 					viewport.MinDepth = 0;
 					viewport.MaxDepth = 1;
-					viewport.TopLeftX = j * viewportHeight * aspect;
+					viewport.TopLeftX = j * viewportWidth;
 					viewport.TopLeftY = i * viewportHeight;
-					m_renderer->GetDeviceContext()->RSSetViewports(1, &viewport);
+					context->RSSetViewports(1, &viewport);
 					b2Vec2 oldCenter = settings.viewCenter;
 					(*testIt)->Step(&settings);
+#if 0
 					if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
 					{
 						Resize(width, height);
 					}
+
+#endif // 0
+					m_renderer->GetBatchDrawer()->End();
 					++testIt;
 					if(testIt == tests.end())
 						break;
 				}
+
 				if(testIt == tests.end())
 					break;
 			}
-			m_renderer->GetBatchDrawer()->End();
 
 			//test->DrawTitle(entry->name);
 
