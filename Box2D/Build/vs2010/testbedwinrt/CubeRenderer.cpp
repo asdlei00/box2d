@@ -26,6 +26,7 @@ void CubeRenderer::CreateDeviceResources()
 	
 	m_d3dContext->RSSetState(m_commonStates->CullClockwise());
 	m_d3dContext->OMSetDepthStencilState(m_commonStates->DepthNone(), 0xffffffff);
+	m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), NULL, 0xffffffff);
 	m_basicEffect->SetLightingEnabled(false);
 	m_basicEffect->SetFogEnabled(false);
 	m_basicEffect->SetTextureEnabled(false);

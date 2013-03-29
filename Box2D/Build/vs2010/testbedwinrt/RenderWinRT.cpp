@@ -48,16 +48,16 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
 	currentProcessedVertex->position.x = vertices->x;
 	currentProcessedVertex->position.y = vertices->y;
 	currentProcessedVertex->position.z = 0;
-	m_renderer->Begin();
+	//m_renderer->Begin();
 	m_renderer->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, processedVertices, totalVertexCount);
-	m_renderer->End();
+	//m_renderer->End();
 	delete [] processedVertices;
 }
 
 void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
 {
-	m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), NULL, 0xffffffff);
-	m_renderer->Begin();
+	//m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), NULL, 0xffffffff);
+	//m_renderer->Begin();
 	VertexPositionColor firstProcessedVertex(XMFLOAT3(vertices->x, vertices->y, 0), XMFLOAT4(color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, 0.5f));
 	const b2Vec2 *currentVertex = vertices + 1;
 	for(int32 i = 2; i < vertexCount; ++i)
@@ -67,16 +67,16 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 		VertexPositionColor processedVertex2(XMFLOAT3(currentVertex->x, currentVertex->y, 0), XMFLOAT4(color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, 0.5f));
 		m_renderer->DrawTriangle(firstProcessedVertex, processedVertex1, processedVertex2);
 	}
-	m_renderer->End();
+	//m_renderer->End();
 
-	m_d3dContext->OMSetBlendState(m_commonStates->Opaque(), NULL, 0xffffffff);
-	m_basicEffect->Apply(m_d3dContext);
+	//m_d3dContext->OMSetBlendState(m_commonStates->Opaque(), NULL, 0xffffffff);
+	//m_basicEffect->Apply(m_d3dContext);
 	DrawPolygon(vertices, vertexCount, color);
 }
 
 void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color)
 {
-	m_renderer->Begin();
+	//m_renderer->Begin();
 	for(int32 i = 0; i < 16; ++i)
 	{
 		float theta = b2_pi / 8.0f * i;
@@ -87,14 +87,14 @@ void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& 
 		VertexPositionColor processedVertex1(XMFLOAT3(v.x, v.y, 0), XMFLOAT4(color.r, color.g, color.b, 1));
 		m_renderer->DrawLine(processedVertex0, processedVertex1);
 	}
-	m_renderer->End();
+	//m_renderer->End();
 }
 
 void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
 {
-	m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), NULL, 0xffffffff);
+	//m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), NULL, 0xffffffff);
 	VertexPositionColor processedVertex0(XMFLOAT3(center.x, center.y, 0), XMFLOAT4(color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, 0.5f));
-	m_renderer->Begin();
+	//m_renderer->Begin();
 	for(int32 i = 0; i < 16; ++i)
 	{
 		float theta = b2_pi / 8.0f * i;
@@ -105,10 +105,10 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 		VertexPositionColor processedVertex2(XMFLOAT3(v.x, v.y, 0), XMFLOAT4(color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, 0.5f));
 		m_renderer->DrawTriangle(processedVertex0, processedVertex1, processedVertex2);
 	}
-	m_renderer->End();
+	//m_renderer->End();
 	
-	m_d3dContext->OMSetBlendState(m_commonStates->Opaque(), NULL, 0xffffffff);
-	m_basicEffect->Apply(m_d3dContext);
+	//m_d3dContext->OMSetBlendState(m_commonStates->Opaque(), NULL, 0xffffffff);
+	//m_basicEffect->Apply(m_d3dContext);
 	DrawCircle(center, radius, color);
 
 	b2Vec2 p = center + radius * axis;
@@ -117,12 +117,12 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
 {
-	m_renderer->Begin();
+	//m_renderer->Begin();
 	m_renderer->DrawLine(
 		VertexPositionColor(XMFLOAT3(p1.x, p1.y, 0), XMFLOAT4(color.r, color.g, color.b, 1)),
 		VertexPositionColor(XMFLOAT3(p2.x, p2.y, 0), XMFLOAT4(color.r, color.g, color.b, 1))
 	);
-	m_renderer->End();
+	//m_renderer->End();
 }
 
 void DebugDraw::DrawTransform(const b2Transform& xf)
@@ -130,7 +130,7 @@ void DebugDraw::DrawTransform(const b2Transform& xf)
 	b2Vec2 p1 = xf.p, p2;
 	const float32 k_axisScale = 10.0f;
 	p2 = p1 + k_axisScale * xf.q.GetXAxis();
-	m_renderer->Begin();
+	//m_renderer->Begin();
 	m_renderer->DrawLine(
 		VertexPositionColor(XMFLOAT3(p1.x, p1.y, 0), XMFLOAT4(1, 0, 0, 1)),
 		VertexPositionColor(XMFLOAT3(p2.x, p2.y, 0), XMFLOAT4(1, 0, 0, 1))
@@ -140,7 +140,7 @@ void DebugDraw::DrawTransform(const b2Transform& xf)
 		VertexPositionColor(XMFLOAT3(p1.x, p1.y, 0), XMFLOAT4(0, 1, 0, 1)),
 		VertexPositionColor(XMFLOAT3(p2.x, p2.y, 0), XMFLOAT4(0, 1, 0, 1))
 	);
-	m_renderer->End();
+	//m_renderer->End();
 	//b2Vec2 p1 = xf.p, p2;
 	//const float32 k_axisScale = 0.4f;
 	//glBegin(GL_LINES);
@@ -166,14 +166,14 @@ void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color)
 	XMFLOAT3 upperLeft(p.x - halfSize, p.y + halfSize, 0);
 	XMFLOAT3 lowerRight(p.x + halfSize, p.y - halfSize, 0);
 	XMFLOAT3 upperRight(p.x + halfSize, p.y + halfSize, 0);
-	m_renderer->Begin();
+	//m_renderer->Begin();
 	m_renderer->DrawQuad(
 		VertexPositionColor(lowerLeft, processedColor),
 		VertexPositionColor(lowerRight, processedColor),
 		VertexPositionColor(upperRight, processedColor),
 		VertexPositionColor(upperLeft, processedColor)
 	);
-	m_renderer->End();
+	//m_renderer->End();
 }
 
 void DebugDraw::DrawString(int x, int y, const char *string, ...)
@@ -268,7 +268,7 @@ void DebugDraw::DrawAABB(b2AABB* aabb, const b2Color& c)
 		VertexPositionColor(upperLeft, processedColor),
 		VertexPositionColor(lowerLeft, processedColor)
 	};
-	m_renderer->Begin();
+	//m_renderer->Begin();
 	m_renderer->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertices, 5);
-	m_renderer->End();
+	//m_renderer->End();
 }

@@ -150,12 +150,12 @@ void TestbedWinRT::Run()
 			basicEffect->SetWorld(XMMatrixIdentity());
 			basicEffect->Apply(m_renderer->GetDeviceContext());
 
-			b2Vec2 oldCenter = settings.viewCenter;
 			settings.hz = settingsHz;
 			//test->Step(&settings);
 			std::vector<Test*>::iterator testIt = tests.begin();
 			float aspect = (float)tw / th;
 			const float viewportHeight = 150;
+			m_renderer->GetBatchDrawer()->Begin();
 			for(unsigned i = 0; i < 5; ++i)
 			{
 				for(unsigned j = 0; j < 10; ++j)
@@ -168,6 +168,7 @@ void TestbedWinRT::Run()
 					viewport.TopLeftX = j * viewportHeight * aspect;
 					viewport.TopLeftY = i * viewportHeight;
 					m_renderer->GetDeviceContext()->RSSetViewports(1, &viewport);
+					b2Vec2 oldCenter = settings.viewCenter;
 					(*testIt)->Step(&settings);
 					if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
 					{
@@ -180,6 +181,7 @@ void TestbedWinRT::Run()
 				if(testIt == tests.end())
 					break;
 			}
+			m_renderer->GetBatchDrawer()->End();
 
 			//test->DrawTitle(entry->name);
 
@@ -242,11 +244,13 @@ void TestbedWinRT::OnPointerPressed(CoreWindow^ sender, PointerEventArgs^ args)
 		b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
 		if (mod == VirtualKeyModifiers::Shift)
 		{
-			test->ShiftMouseDown(p);
+			if(test)
+				test->ShiftMouseDown(p);
 		}
 		else
 		{
-			test->MouseDown(p);
+			if(test)
+				test->MouseDown(p);
 		}
 	}
 	else if (mouseProperties->IsRightButtonPressed)
@@ -265,7 +269,8 @@ void TestbedWinRT::OnPointerReleased(CoreWindow^ sender, PointerEventArgs^ args)
 	{
 		VirtualKeyModifiers mod = args->KeyModifiers;
 		b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
-		test->MouseUp(p);
+		if(test)
+			test->MouseUp(p);
 	}
 	else if (button == PointerUpdateKind::RightButtonReleased)
 	{
@@ -277,7 +282,8 @@ void TestbedWinRT::OnPointerMoved(CoreWindow^ sender, PointerEventArgs^ args)
 {
 	Point position = args->CurrentPoint->Position;
 	b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
-	test->MouseMove(p);
+	if(test)
+		test->MouseMove(p);
 	
 	if (rMouseDown)
 	{
