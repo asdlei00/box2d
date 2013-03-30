@@ -32,6 +32,12 @@ public:
 	// Get CubeRenderer singleton
 	static CubeRenderer ^GetInstance();
 
+	bool GetTextEnable() { return m_enableText; }
+	void SetTextEnable(bool enable) { m_enableText = enable; }
+	void BeginPrimitive();
+	void EndPrimitive();
+	bool IsPrimitiveBeginning() { return m_beginPrimitive; }
+
 internal:
 	//getters for the DirectXTK helpers
 	DirectX::CommonStates *GetCommonStates() { return m_commonStates.get(); }
@@ -53,4 +59,6 @@ private:
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	bool m_enableText;
+	bool m_beginPrimitive;
 };

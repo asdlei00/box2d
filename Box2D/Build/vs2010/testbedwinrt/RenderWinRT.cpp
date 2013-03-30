@@ -178,23 +178,33 @@ void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color)
 
 void DebugDraw::DrawString(int x, int y, const char *string, ...)
 {
-	//char buffer[128];
+	CubeRenderer ^cubeRenderer = CubeRenderer::GetInstance();
+	if(cubeRenderer->GetTextEnable())
+	{
+		bool primitiveBeginning = cubeRenderer->IsPrimitiveBeginning();
+		if(primitiveBeginning)
+			m_renderer->End();
+			
+		char buffer[128];
 
-	//va_list arg;
-	//va_start(arg, string);
-	//vsprintf_s(buffer, string, arg);
-	//va_end(arg);
+		va_list arg;
+		va_start(arg, string);
+		vsprintf_s(buffer, string, arg);
+		va_end(arg);
 
-	//wchar_t wbuffer[128];
-	//size_t printed;
-	//mbstowcs_s(&printed, wbuffer, buffer, sizeof(wbuffer));
+		wchar_t wbuffer[128];
+		size_t printed;
+		mbstowcs_s(&printed, wbuffer, buffer, sizeof(wbuffer));
 
-	//m_spriteBatch->Begin();
-	//m_spriteFont->DrawString(m_spriteBatch, wbuffer, XMFLOAT2((float)x, (float)y), XMLoadFloat4(&XMFLOAT4(0.9f, 0.6f, 0.6f, 1.0f)));
-	//m_spriteBatch->End();
+		m_spriteBatch->Begin();
+		m_spriteFont->DrawString(m_spriteBatch, wbuffer, XMFLOAT2((float)x, (float)y), XMLoadFloat4(&XMFLOAT4(0.9f, 0.6f, 0.6f, 1.0f)));
+		m_spriteBatch->End();
 
-	//TestbedWinRT::Resize(0, 0);
-	//m_d3dContext->RSSetState(m_commonStates->CullClockwise());
+		TestbedWinRT::Resize(0, 0);
+		m_d3dContext->RSSetState(m_commonStates->CullClockwise());
+		if(primitiveBeginning)
+			m_renderer->Begin();
+	}
 
 	//glMatrixMode(GL_PROJECTION);
 	//glPushMatrix();
@@ -223,23 +233,32 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 
 void DebugDraw::DrawString(const b2Vec2& p, const char *string, ...)
 {
-	//char buffer[128];
+	CubeRenderer ^cubeRenderer = CubeRenderer::GetInstance();
+	if(cubeRenderer->GetTextEnable())
+	{
+		bool primitiveBeginning = cubeRenderer->IsPrimitiveBeginning();
+		if(primitiveBeginning)
+			m_renderer->End();
 
-	//va_list arg;
-	//va_start(arg, string);
-	//vsprintf_s(buffer, string, arg);
-	//va_end(arg);
+		char buffer[128];
 
-	//wchar_t wbuffer[128];
-	//size_t printed;
-	//mbstowcs_s(&printed, wbuffer, buffer, sizeof(wbuffer));
+		va_list arg;
+		va_start(arg, string);
+		vsprintf_s(buffer, string, arg);
+		va_end(arg);
 
-	//m_spriteBatch->Begin();
-	//m_spriteFont->DrawString(m_spriteBatch, wbuffer, XMFLOAT2(p.x, p.y), XMLoadFloat4(&XMFLOAT4(0.5f, 0.9f, 0.5f, 1.0f)));
-	//m_spriteBatch->End();
-	//
-	//m_d3dContext->RSSetState(m_commonStates->CullClockwise());
+		wchar_t wbuffer[128];
+		size_t printed;
+		mbstowcs_s(&printed, wbuffer, buffer, sizeof(wbuffer));
 
+		m_spriteBatch->Begin();
+		m_spriteFont->DrawString(m_spriteBatch, wbuffer, XMFLOAT2(p.x, p.y), XMLoadFloat4(&XMFLOAT4(0.5f, 0.9f, 0.5f, 1.0f)));
+		m_spriteBatch->End();
+	
+		m_d3dContext->RSSetState(m_commonStates->CullClockwise());
+		if(primitiveBeginning)
+			m_renderer->Begin();
+	}
 	//glColor3f(0.5f, 0.9f, 0.5f);
 	//glRasterPos2f(p.x, p.y);
 

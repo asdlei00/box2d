@@ -12,6 +12,8 @@ CubeRenderer ^CubeRenderer::m_instance = nullptr;
 CubeRenderer::CubeRenderer()
 {
 	m_instance = this;
+	m_enableText = true;
+	m_beginPrimitive = false;
 }
 
 void CubeRenderer::CreateDeviceResources()
@@ -127,4 +129,16 @@ CubeRenderer ^CubeRenderer::GetInstance()
 	if(m_instance == nullptr)
 		m_instance = ref new CubeRenderer();
 	return m_instance;
+}
+
+void CubeRenderer::BeginPrimitive()
+{
+	m_beginPrimitive = true;
+	m_batchDrawer->Begin();
+}
+
+void CubeRenderer::EndPrimitive()
+{
+	m_beginPrimitive = false;
+	m_batchDrawer->End();
 }

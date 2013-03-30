@@ -16,7 +16,7 @@ public:
 	virtual void Run();
 	virtual void Uninitialize();
 	
-	static void Resize(int w, int h);
+	static void Resize(float w, float h);
 
 protected:
 	// Event Handlers.
@@ -35,8 +35,16 @@ protected:
 	void OnKeyDown(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::KeyEventArgs^ args);
 
 private:
+	enum AppState
+	{
+		GRID,
+		ZOOMED_IN
+	};
 
+	int m_currentHighlightedX;
+	int m_currentHighlightedY;
 	CubeRenderer^ m_renderer;
+	AppState m_appState;
 	bool m_windowClosed;
 	bool m_windowVisible;
 };

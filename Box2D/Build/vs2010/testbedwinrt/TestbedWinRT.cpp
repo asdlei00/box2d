@@ -21,12 +21,12 @@ namespace
 	TestEntry* entry;
 	Test* test;
 	Settings settings;
-	int32 width = 640;
-	int32 height = 480;
+	float width = 640;
+	float height = 480;
 	int32 framePeriod = 16;
 	float settingsHz = 60.0;
 	float32 viewZoom = 1.0f;
-	int tw, th;
+	float tw, th;
 	bool rMouseDown;
 	b2Vec2 lastp;
 	std::vector<Test*> tests;
@@ -51,6 +51,9 @@ static b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
 }
 
 TestbedWinRT::TestbedWinRT() :
+	m_currentHighlightedX(0),
+	m_currentHighlightedY(0),
+	m_appState(AppState::GRID),
 	m_windowClosed(false),
 	m_windowVisible(true)
 {
@@ -106,8 +109,8 @@ void TestbedWinRT::SetWindow(CoreWindow^ window)
 	Windows::Foundation::Rect windowBounds = window->Bounds;
 	float windowWidth = m_renderer->ConvertDipsToPixels(windowBounds.Width);
 	float windowHeight = m_renderer->ConvertDipsToPixels(windowBounds.Height);
-	width = (int32)windowWidth;
-	height = (int32)windowHeight;
+	width = windowWidth;
+	height = windowHeight;
 	tw = width;
 	th = height;
 	Resize(width, height);
@@ -150,64 +153,124 @@ void TestbedWinRT::Run()
 			basicEffect->SetWorld(XMMatrixIdentity());
 
 			auto context = m_renderer->GetDeviceContext();
-			basicEffect->Apply(context);
+			auto drawer = m_renderer->GetBatchDrawer();
+			//basicEffect->Apply(context);
 
 			settings.hz = settingsHz;
 			//test->Step(&settings);
 			std::vector<Test*>::iterator testIt = tests.begin();
-			float aspect = (float)tw / th;
-			float viewportHeight = height/5.0f;
-			float viewportWidth = width/10.0f;
+			//float aspect = (float)tw / th;
 
-			if(viewportHeight < viewportWidth) {
-				viewportWidth = viewportHeight;
-			} else {
-				viewportHeight = viewportWidth;
-			}
-
-			for(unsigned i = 0; i < 5; ++i)
+			if(m_appState == AppState::GRID)
 			{
-				for(unsigned j = 0; j < 10; ++j)
+				m_renderer->SetTextEnable(false);
+				float oldWidth = width;
+				float oldHeight = height;
+				float viewportHeight = height/5.0f;
+				float viewportWidth = width/10.0f;
+				float aspect = viewportWidth / viewportHeight;
+				height = height * 0.05f;
+				width = height * aspect;
+				for(unsigned i = 0; i < 5; ++i)
 				{
-					m_renderer->GetBatchDrawer()->Begin();
-					D3D11_VIEWPORT viewport;
-					viewport.Width = viewportWidth;
-					viewport.Height = viewportHeight;
-					viewport.MinDepth = 0;
-					viewport.MaxDepth = 1;
-					viewport.TopLeftX = j * viewportWidth;
-					viewport.TopLeftY = i * viewportHeight;
-					context->RSSetViewports(1, &viewport);
-					b2Vec2 oldCenter = settings.viewCenter;
-					(*testIt)->Step(&settings);
-#if 0
-					if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
+					for(unsigned j = 0; j < 10; ++j)
 					{
-						Resize(width, height);
-					}
+						m_renderer->GetBasicEffect()->SetProjection(XMMatrixOrthographicRH(width, height, -1, 1));
+						m_renderer->GetBasicEffect()->Apply(context);
+						m_renderer->BeginPrimitive();
+						D3D11_VIEWPORT viewport;
+						viewport.Width = viewportWidth;
+						viewport.Height = viewportHeight;
+						viewport.MinDepth = 0;
+						viewport.MaxDepth = 1;
+						viewport.TopLeftX = j * viewportWidth;
+						viewport.TopLeftY = i * viewportHeight;
+						context->RSSetViewports(1, &viewport);
+						b2Vec2 oldCenter = settings.viewCenter;
+						(*testIt)->Step(&settings);
+#if 0
+						if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
+						{
+							Resize(width, height);
+						}
 
 #endif // 0
-					m_renderer->GetBatchDrawer()->End();
-					++testIt;
+						drawer->End();
+						++testIt;
+						if(testIt == tests.end())
+							break;
+					}
+
 					if(testIt == tests.end())
 						break;
 				}
 
-				if(testIt == tests.end())
-					break;
-			}
+				width = oldWidth;
+				height = oldHeight;
+				//test->DrawTitle(entry->name);
 
-			//test->DrawTitle(entry->name);
+				//if (testSelection != testIndex)
+				//{
+				//	testIndex = testSelection;
+				//	delete test;
+				//	entry = g_testEntries + testIndex;
+				//	test = entry->createFcn();
+				//	viewZoom = 1.0f;
+				//	settings.viewCenter.Set(0.0f, 20.0f);
+				//	Resize(width, height);
+				//}
 
-			if (testSelection != testIndex)
-			{
-				testIndex = testSelection;
-				delete test;
-				entry = g_testEntries + testIndex;
-				test = entry->createFcn();
-				viewZoom = 1.0f;
-				settings.viewCenter.Set(0.0f, 20.0f);
+				//draw the grid
+				D3D11_VIEWPORT viewport;
+				viewport.Width = (float)width;
+				viewport.Height = (float)height;
+				viewport.MinDepth = 0;
+				viewport.MaxDepth = 1;
+				viewport.TopLeftX = 0;
+				viewport.TopLeftY = 0;
+				context->RSSetViewports(1, &viewport);
+				m_renderer->GetBasicEffect()->SetProjection(XMMatrixOrthographicOffCenterRH(0, (float)width, (float)height, 0, -1, 1));
+				m_renderer->GetBasicEffect()->Apply(context);
+				drawer->Begin();
+				for(unsigned i = 0; i <= 5; ++i)
+				{
+					for(unsigned j = 0; j <= 10; ++j)
+					{
+						drawer->DrawLine(VertexPositionColor(XMFLOAT3(j * viewportWidth, 0, 0), XMFLOAT4(1, 1, 1, 1)), VertexPositionColor(XMFLOAT3(j * viewportWidth, 1000, 0), XMFLOAT4(1, 1, 1, 1)));
+					}
+					drawer->DrawLine(VertexPositionColor(XMFLOAT3(0, i *viewportHeight, 0), XMFLOAT4(1, 1, 1, 1)), VertexPositionColor(XMFLOAT3(2000, i *viewportHeight, 0), XMFLOAT4(1, 1, 1, 1)));
+				}
+
+				//draw the highlighted square
+				drawer->DrawLine(
+					VertexPositionColor(XMFLOAT3(m_currentHighlightedX * viewportWidth, m_currentHighlightedY * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1)),
+					VertexPositionColor(XMFLOAT3(m_currentHighlightedX * viewportWidth, (m_currentHighlightedY + 1) * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1))
+				);
+				drawer->DrawLine(
+					VertexPositionColor(XMFLOAT3((m_currentHighlightedX + 1) * viewportWidth, m_currentHighlightedY * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1)),
+					VertexPositionColor(XMFLOAT3((m_currentHighlightedX + 1) * viewportWidth, (m_currentHighlightedY + 1) * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1))
+				);
+				drawer->DrawLine(
+					VertexPositionColor(XMFLOAT3(m_currentHighlightedX * viewportWidth, m_currentHighlightedY * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1)),
+					VertexPositionColor(XMFLOAT3((m_currentHighlightedX + 1) * viewportWidth, m_currentHighlightedY * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1))
+				);
+				drawer->DrawLine(
+					VertexPositionColor(XMFLOAT3(m_currentHighlightedX * viewportWidth, (m_currentHighlightedY + 1) * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1)),
+					VertexPositionColor(XMFLOAT3((m_currentHighlightedX + 1) * viewportWidth, (m_currentHighlightedY + 1) * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1))
+				);
+
+				drawer->End();
+
 				Resize(width, height);
+			}
+			else
+			{
+				m_renderer->SetTextEnable(true);
+				Resize(width, height);
+				m_renderer->BeginPrimitive();
+				test->Step(&settings);
+				test->DrawTitle(entry->name);
+				m_renderer->EndPrimitive();
 			}
 
 			m_renderer->Present(); // This call is synchronized to the display frame rate.
@@ -230,8 +293,8 @@ void TestbedWinRT::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEven
 	Windows::Foundation::Size windowSize = args->Size;
 	float windowWidth = m_renderer->ConvertDipsToPixels(windowSize.Width);
 	float windowHeight = m_renderer->ConvertDipsToPixels(windowSize.Height);
-	width = (int32)windowWidth;
-	height = (int32)windowHeight;
+	width = windowWidth;
+	height = windowHeight;
 	tw = width;
 	th = height;
 	Resize(width, height);
@@ -252,25 +315,50 @@ void TestbedWinRT::OnPointerPressed(CoreWindow^ sender, PointerEventArgs^ args)
 	// Use the mouse to move things around.
 	PointerPointProperties ^mouseProperties = args->CurrentPoint->Properties;
 	Point position = args->CurrentPoint->Position;
-	if (mouseProperties->IsLeftButtonPressed)
+	if(m_appState == ZOOMED_IN)
 	{
-		VirtualKeyModifiers mod = args->KeyModifiers;
-		b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
-		if (mod == VirtualKeyModifiers::Shift)
+		if (mouseProperties->IsLeftButtonPressed)
 		{
-			if(test)
-				test->ShiftMouseDown(p);
+			VirtualKeyModifiers mod = args->KeyModifiers;
+			b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
+			if (mod == VirtualKeyModifiers::Shift)
+			{
+				if(test)
+					test->ShiftMouseDown(p);
+			}
+			else
+			{
+				if(test)
+					test->MouseDown(p);
+			}
 		}
-		else
+		else if (mouseProperties->IsRightButtonPressed)
 		{
-			if(test)
-				test->MouseDown(p);
+			lastp = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
+			rMouseDown = true;
 		}
 	}
-	else if (mouseProperties->IsRightButtonPressed)
+	else
 	{
-		lastp = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
-		rMouseDown = true;
+		//zoom in on the demo selected
+		if(mouseProperties->IsLeftButtonPressed)
+		{
+			testIndex = m_currentHighlightedY * 10 + m_currentHighlightedX;//testSelection;
+
+			entry = g_testEntries + testIndex;
+			if(entry->createFcn == NULL)
+			{
+				test = NULL;
+				return;
+			}
+			test = tests[testIndex];
+			m_appState = AppState::ZOOMED_IN;
+			//delete test;
+			//test = entry->createFcn();
+			viewZoom = 1.0f;
+			settings.viewCenter.Set(0.0f, 20.0f);
+			Resize(width, height);
+		}
 	}
 }
 
@@ -295,6 +383,11 @@ void TestbedWinRT::OnPointerReleased(CoreWindow^ sender, PointerEventArgs^ args)
 void TestbedWinRT::OnPointerMoved(CoreWindow^ sender, PointerEventArgs^ args)
 {
 	Point position = args->CurrentPoint->Position;
+
+	//determine the correct grid square to highlight
+	m_currentHighlightedX = (int)(position.X / width * 10);
+	m_currentHighlightedY = (int)(position.Y / height * 5);
+
 	b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
 
 	if(test)
@@ -337,128 +430,137 @@ void TestbedWinRT::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 	VirtualKey key = args->VirtualKey;
 	//TODO: figure out how to get the keyboard modifiers using this framework
 
-	switch (key)
+	if(m_appState == AppState::ZOOMED_IN)
 	{
-		// Press left to pan left.
-	case VirtualKey::Left:
-		//if (mod == GLUT_ACTIVE_CTRL)
-		//{
-		//	b2Vec2 newOrigin(2.0f, 0.0f);
-		//	test->ShiftOrigin(newOrigin);
-		//}
-		//else
+		switch (key)
 		{
-			settings.viewCenter.x -= 0.5f;
+			// Press left to pan left.
+		case VirtualKey::Left:
+			//if (mod == GLUT_ACTIVE_CTRL)
+			//{
+			//	b2Vec2 newOrigin(2.0f, 0.0f);
+			//	test->ShiftOrigin(newOrigin);
+			//}
+			//else
+			{
+				settings.viewCenter.x -= 0.5f;
+				Resize(width, height);
+			}
+			break;
+
+			// Press right to pan right.
+		case VirtualKey::Right:
+			//if (mod == GLUT_ACTIVE_CTRL)
+			//{
+			//	b2Vec2 newOrigin(-2.0f, 0.0f);
+			//	test->ShiftOrigin(newOrigin);
+			//}
+			//else
+			{
+				settings.viewCenter.x += 0.5f;
+				Resize(width, height);
+			}
+			break;
+
+			// Press down to pan down.
+		case VirtualKey::Down:
+			//if (mod == GLUT_ACTIVE_CTRL)
+			//{
+			//	b2Vec2 newOrigin(0.0f, 2.0f);
+			//	test->ShiftOrigin(newOrigin);
+			//}
+			//else
+			{
+				settings.viewCenter.y -= 0.5f;
+				Resize(width, height);
+			}
+			break;
+
+			// Press up to pan up.
+		case VirtualKey::Up:
+			//if (mod == GLUT_ACTIVE_CTRL)
+			//{
+			//	b2Vec2 newOrigin(0.0f, -2.0f);
+			//	test->ShiftOrigin(newOrigin);
+			//}
+			//else
+			{
+				settings.viewCenter.y += 0.5f;
+				Resize(width, height);
+			}
+			break;
+
+			// Press home to reset the view.
+		case VirtualKey::Home:
+			viewZoom = 1.0f;
+			settings.viewCenter.Set(0.0f, 20.0f);
 			Resize(width, height);
-		}
-		break;
+			break;
 
-		// Press right to pan right.
-	case VirtualKey::Right:
-		//if (mod == GLUT_ACTIVE_CTRL)
-		//{
-		//	b2Vec2 newOrigin(-2.0f, 0.0f);
-		//	test->ShiftOrigin(newOrigin);
-		//}
-		//else
-		{
-			settings.viewCenter.x += 0.5f;
+		case VirtualKey::Escape:
+			m_appState = AppState::GRID;
+			test = 0;
+			break;
+
+			// Press 'z' to zoom out.
+		case VirtualKey::Z:
+			viewZoom = b2Min(1.1f * viewZoom, 20.0f);
 			Resize(width, height);
-		}
-		break;
+			break;
 
-		// Press down to pan down.
-	case VirtualKey::Down:
-		//if (mod == GLUT_ACTIVE_CTRL)
-		//{
-		//	b2Vec2 newOrigin(0.0f, 2.0f);
-		//	test->ShiftOrigin(newOrigin);
-		//}
-		//else
-		{
-			settings.viewCenter.y -= 0.5f;
+			// Press 'x' to zoom in.
+		case VirtualKey::X:
+			viewZoom = b2Max(0.9f * viewZoom, 0.02f);
 			Resize(width, height);
-		}
-		break;
+			break;
 
-		// Press up to pan up.
-	case VirtualKey::Up:
-		//if (mod == GLUT_ACTIVE_CTRL)
-		//{
-		//	b2Vec2 newOrigin(0.0f, -2.0f);
-		//	test->ShiftOrigin(newOrigin);
-		//}
-		//else
-		{
-			settings.viewCenter.y += 0.5f;
-			Resize(width, height);
-		}
-		break;
+			// Press 'r' to reset.
+		case VirtualKey::R:
+			delete test;
+			test = entry->createFcn();
+			break;
 
-		// Press home to reset the view.
-	case VirtualKey::Home:
-		viewZoom = 1.0f;
-		settings.viewCenter.Set(0.0f, 20.0f);
-		Resize(width, height);
-		break;
-
-	case VirtualKey::Escape:
-		m_windowClosed = true;
-		break;
-
-		// Press 'z' to zoom out.
-	case VirtualKey::Z:
-		viewZoom = b2Min(1.1f * viewZoom, 20.0f);
-		Resize(width, height);
-		break;
-
-		// Press 'x' to zoom in.
-	case VirtualKey::X:
-		viewZoom = b2Max(0.9f * viewZoom, 0.02f);
-		Resize(width, height);
-		break;
-
-		// Press 'r' to reset.
-	case VirtualKey::R:
-		delete test;
-		test = entry->createFcn();
-		break;
-
-		// Press space to launch a bomb.
-	case VirtualKey::Space:
-		if (test)
-		{
-			test->LaunchBomb();
-		}
-		break;
+			// Press space to launch a bomb.
+		case VirtualKey::Space:
+			if (test)
+			{
+				test->LaunchBomb();
+			}
+			break;
  
-	case VirtualKey::P:
-		settings.pause = !settings.pause;
-		break;
+		case VirtualKey::P:
+			settings.pause = !settings.pause;
+			break;
 
-		// Press [ to prev test.
-	//case 0xDB:
-	//	--testSelection;
-	//	if (testSelection < 0)
-	//	{
-	//		testSelection = testCount - 1;
-	//	}
-	//	break;
+			// Press [ to prev test.
+		//case 0xDB:
+		//	--testSelection;
+		//	if (testSelection < 0)
+		//	{
+		//		testSelection = testCount - 1;
+		//	}
+		//	break;
 
-		// Press ] to next test.
-	//case 0xDD:
-	//	++testSelection;
-	//	if (testSelection == testCount)
-	//	{
-	//		testSelection = 0;
-	//	}
-	//	break;
+			// Press ] to next test.
+		//case 0xDD:
+		//	++testSelection;
+		//	if (testSelection == testCount)
+		//	{
+		//		testSelection = 0;
+		//	}
+		//	break;
 		
-	default:
-		if (test)
-		{
-			test->Keyboard((int)key);
+		default:
+			if (test)
+			{
+				test->Keyboard((int)key);
+			}
 		}
+	}
+	else
+	{
+		if(key == VirtualKey::Escape)
+			m_windowClosed = true;
 	}
 }
 
@@ -490,7 +592,7 @@ void TestbedWinRT::OnResuming(Platform::Object^ sender, Platform::Object^ args)
 	// does not occur if the app was previously terminated.
 }
 
-void TestbedWinRT::Resize(int w, int h)
+void TestbedWinRT::Resize(float w, float h)
 {
 	if(w && h)
 	{
@@ -507,7 +609,9 @@ void TestbedWinRT::Resize(int w, int h)
 	b2Vec2 upper = settings.viewCenter + extents;
 
 	// L/R/B/T
-	CubeRenderer::GetInstance()->GetBasicEffect()->SetProjection(XMMatrixOrthographicOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1));
+	BasicEffect *effect = CubeRenderer::GetInstance()->GetBasicEffect();
+	effect->SetProjection(XMMatrixOrthographicOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1));
+	effect->Apply(CubeRenderer::GetInstance()->GetDeviceContext());
 }
 
 IFrameworkView^ Direct3DApplicationSource::CreateView()
