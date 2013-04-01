@@ -22,7 +22,8 @@ void CubeRenderer::CreateDeviceResources()
 
 	m_commonStates.reset(new DirectX::CommonStates(m_d3dDevice.Get()));
 	m_basicEffect.reset(new DirectX::BasicEffect(m_d3dDevice.Get()));
-	m_batchDrawer.reset(new DirectX::PrimitiveBatch<DirectX::VertexPositionColor>(m_d3dContext.Get(), 1 << 16, 1 << 16));
+	size_t defaultBatchSize  = 1 << 16;
+	m_batchDrawer.reset(new DirectX::PrimitiveBatch<DirectX::VertexPositionColor>(m_d3dContext.Get(), defaultBatchSize * 3, defaultBatchSize));
 	m_spriteBatch.reset(new DirectX::SpriteBatch(m_d3dContext.Get()));
 	m_spriteFont.reset(new DirectX::SpriteFont(m_d3dDevice.Get(), arial, sizeof(arial)));
 	
