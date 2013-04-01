@@ -23,8 +23,8 @@ namespace
 	Settings settings;
 	float width = 640;
 	float height = 480;
-	int32 framePeriod = 16;
-	float settingsHz = 60.0;
+	float settingsHz = 30.0f;
+	float framePeriod = 1000.0f/settingsHz;
 	float32 viewZoom = 1.0f;
 	float tw, th;
 	bool rMouseDown;
@@ -134,6 +134,8 @@ void TestbedWinRT::Load(Platform::String^ entryPoint)
 {
 }
 
+
+
 void TestbedWinRT::Run()
 {
 	BasicTimer^ timer = ref new BasicTimer();
@@ -142,8 +144,8 @@ void TestbedWinRT::Run()
 	{
 		if (m_windowVisible)
 		{
-			timer->Update();
 			CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
+			timer->Update();
 			m_renderer->Update(timer->Total, timer->Delta);
 			m_renderer->Render();
 
@@ -171,13 +173,12 @@ void TestbedWinRT::Run()
 				float aspect = viewportWidth / viewportHeight;
 				height = height * 0.05f;
 				width = height * aspect;
+				m_renderer->GetBasicEffect()->SetProjection(XMMatrixOrthographicRH(width, height, -1, 1));
+				m_renderer->GetBasicEffect()->Apply(context);
 				for(unsigned i = 0; i < 5; ++i)
 				{
 					for(unsigned j = 0; j < 10; ++j)
 					{
-						m_renderer->GetBasicEffect()->SetProjection(XMMatrixOrthographicRH(width, height, -1, 1));
-						m_renderer->GetBasicEffect()->Apply(context);
-						m_renderer->BeginPrimitive();
 						D3D11_VIEWPORT viewport;
 						viewport.Width = viewportWidth;
 						viewport.Height = viewportHeight;
@@ -186,8 +187,10 @@ void TestbedWinRT::Run()
 						viewport.TopLeftX = j * viewportWidth;
 						viewport.TopLeftY = i * viewportHeight;
 						context->RSSetViewports(1, &viewport);
+						m_renderer->BeginPrimitive();
 						b2Vec2 oldCenter = settings.viewCenter;
 						(*testIt)->Step(&settings);
+
 #if 0
 						if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
 						{
@@ -195,8 +198,8 @@ void TestbedWinRT::Run()
 						}
 
 #endif // 0
-						drawer->End();
 						++testIt;
+						m_renderer->EndPrimitive();
 						if(testIt == tests.end())
 							break;
 					}
@@ -220,6 +223,7 @@ void TestbedWinRT::Run()
 				//	Resize(width, height);
 				//}
 
+#if 1
 				//draw the grid
 				D3D11_VIEWPORT viewport;
 				viewport.Width = (float)width;
@@ -245,23 +249,25 @@ void TestbedWinRT::Run()
 				drawer->DrawLine(
 					VertexPositionColor(XMFLOAT3(m_currentHighlightedX * viewportWidth, m_currentHighlightedY * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1)),
 					VertexPositionColor(XMFLOAT3(m_currentHighlightedX * viewportWidth, (m_currentHighlightedY + 1) * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1))
-				);
+					);
 				drawer->DrawLine(
 					VertexPositionColor(XMFLOAT3((m_currentHighlightedX + 1) * viewportWidth, m_currentHighlightedY * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1)),
 					VertexPositionColor(XMFLOAT3((m_currentHighlightedX + 1) * viewportWidth, (m_currentHighlightedY + 1) * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1))
-				);
+					);
 				drawer->DrawLine(
 					VertexPositionColor(XMFLOAT3(m_currentHighlightedX * viewportWidth, m_currentHighlightedY * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1)),
 					VertexPositionColor(XMFLOAT3((m_currentHighlightedX + 1) * viewportWidth, m_currentHighlightedY * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1))
-				);
+					);
 				drawer->DrawLine(
 					VertexPositionColor(XMFLOAT3(m_currentHighlightedX * viewportWidth, (m_currentHighlightedY + 1) * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1)),
 					VertexPositionColor(XMFLOAT3((m_currentHighlightedX + 1) * viewportWidth, (m_currentHighlightedY + 1) * viewportHeight, 0), XMFLOAT4(1, 0, 0, 1))
-				);
+					);
 
 				drawer->End();
+#endif // 0
 
-				Resize(width, height);
+				//Resize(width, height);  
+
 			}
 			else
 			{
@@ -269,8 +275,8 @@ void TestbedWinRT::Run()
 				Resize(width, height);
 				m_renderer->BeginPrimitive();
 				test->Step(&settings);
-				test->DrawTitle(entry->name);
 				m_renderer->EndPrimitive();
+				test->DrawTitle(entry->name);
 			}
 
 			m_renderer->Present(); // This call is synchronized to the display frame rate.
@@ -343,6 +349,9 @@ void TestbedWinRT::OnPointerPressed(CoreWindow^ sender, PointerEventArgs^ args)
 		//zoom in on the demo selected
 		if(mouseProperties->IsLeftButtonPressed)
 		{
+			m_currentHighlightedX = (int)(position.X / width * 10);
+			m_currentHighlightedY = (int)(position.Y / height * 5);
+
 			testIndex = m_currentHighlightedY * 10 + m_currentHighlightedX;//testSelection;
 
 			entry = g_testEntries + testIndex;
