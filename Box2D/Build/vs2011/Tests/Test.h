@@ -21,7 +21,7 @@
 
 #include <Box2D/Box2D.h>
 //#include "Render.h"
-#include "Build/vs2010/TestbedWinRT/RenderWinRT.h"
+#include "../RenderWinRT.h"
 
 #include <cstdlib>
 
