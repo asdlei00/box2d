@@ -449,7 +449,10 @@ void TestbedWinRT::OnKeyUp(CoreWindow^ sender, KeyEventArgs^ args)
 {
 	if (test)
 	{
-		test->KeyboardUp((int)args->VirtualKey);
+		int key = (int)args->VirtualKey;
+		if(key >= 'A' && key <= 'Z')
+			key += 'a' - 'A';
+		test->KeyboardUp(key);
 	}
 }
 
@@ -457,6 +460,9 @@ void TestbedWinRT::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 {
 	VirtualKey key = args->VirtualKey;
 	//TODO: figure out how to get the keyboard modifiers using this framework
+	int translatedKey = (int)args->VirtualKey;
+	if(translatedKey >= 'A' && translatedKey <= 'Z')
+		translatedKey += 'a' - 'A';
 
 	if(m_appState == AppState::ZOOMED_IN)
 	{
@@ -581,7 +587,7 @@ void TestbedWinRT::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 		default:
 			if (test)
 			{
-				test->Keyboard((int)key);
+				test->Keyboard(translatedKey);
 			}
 		}
 	}
