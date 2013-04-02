@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "CubeRenderer.h"
+#include "TestRenderer.h"
 #include "arial.inc"
 
 using namespace DirectX;
@@ -7,16 +7,16 @@ using namespace Microsoft::WRL;
 using namespace Windows::Foundation;
 using namespace Windows::UI::Core;
 
-CubeRenderer ^CubeRenderer::m_instance = nullptr;
+TestRenderer ^TestRenderer::m_instance = nullptr;
 
-CubeRenderer::CubeRenderer()
+TestRenderer::TestRenderer()
 {
 	m_instance = this;
 	m_enableText = true;
 	m_beginPrimitive = false;
 }
 
-void CubeRenderer::CreateDeviceResources()
+void TestRenderer::CreateDeviceResources()
 {
 	Direct3DBase::CreateDeviceResources();
 
@@ -48,7 +48,7 @@ void CubeRenderer::CreateDeviceResources()
 		);
 }
 
-void CubeRenderer::CreateWindowSizeDependentResources()
+void TestRenderer::CreateWindowSizeDependentResources()
 {
 	Direct3DBase::CreateWindowSizeDependentResources();
 
@@ -73,14 +73,14 @@ void CubeRenderer::CreateWindowSizeDependentResources()
 	m_basicEffect->SetProjection(XMLoadFloat4x4(&m_constantBufferData.projection));
 }
 
-void CubeRenderer::UpdateForWindowSizeChange()
+void TestRenderer::UpdateForWindowSizeChange()
 {
 	Direct3DBase::UpdateForWindowSizeChange();
 
 	m_basicEffect->SetProjection(XMMatrixOrthographicRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1));
 }
 
-void CubeRenderer::Update(float timeTotal, float timeDelta)
+void TestRenderer::Update(float timeTotal, float timeDelta)
 {
 	(void) timeDelta; // Unused parameter.
 
@@ -92,7 +92,7 @@ void CubeRenderer::Update(float timeTotal, float timeDelta)
 	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixIdentity());//(XMMatrixRotationY(timeTotal * XM_PIDIV4)));
 }
 
-void CubeRenderer::Render()
+void TestRenderer::Render()
 {
 	const float midnightBlue[] = { 0.098f, 0.098f, 0.439f, 1.000f };
 	m_d3dContext->ClearRenderTargetView(
@@ -125,20 +125,20 @@ void CubeRenderer::Render()
 	//m_d3dContext->RSSetViewports(1, &viewport);
 }
 
-CubeRenderer ^CubeRenderer::GetInstance()
+TestRenderer ^TestRenderer::GetInstance()
 {
 	if(m_instance == nullptr)
-		m_instance = ref new CubeRenderer();
+		m_instance = ref new TestRenderer();
 	return m_instance;
 }
 
-void CubeRenderer::BeginPrimitive()
+void TestRenderer::BeginPrimitive()
 {
 	m_beginPrimitive = true;
 	m_batchDrawer->Begin();
 }
 
-void CubeRenderer::EndPrimitive()
+void TestRenderer::EndPrimitive()
 {
 	m_beginPrimitive = false;
 	m_batchDrawer->End();

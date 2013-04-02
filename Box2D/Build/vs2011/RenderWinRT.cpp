@@ -7,20 +7,20 @@
 #include "SpriteBatch.h"
 #include "SpriteFont.h"
 #include <d3d11.h>
-#include "CubeRenderer.h"
+#include "TestRenderer.h"
 #include "TestbedWinRT.h"
 
 using namespace DirectX;
 
 DebugDraw::DebugDraw()
 {
-	CubeRenderer ^cubeRenderer = CubeRenderer::GetInstance();
-	m_commonStates = cubeRenderer->GetCommonStates();
-	m_basicEffect = cubeRenderer->GetBasicEffect();
-	m_renderer = cubeRenderer->GetBatchDrawer();
-	m_spriteBatch = cubeRenderer->GetSpriteBatch();
-	m_spriteFont = cubeRenderer->GetSpriteFont();
-	m_d3dContext = cubeRenderer->GetDeviceContext();
+	TestRenderer ^TestRenderer = TestRenderer::GetInstance();
+	m_commonStates = TestRenderer->GetCommonStates();
+	m_basicEffect = TestRenderer->GetBasicEffect();
+	m_renderer = TestRenderer->GetBatchDrawer();
+	m_spriteBatch = TestRenderer->GetSpriteBatch();
+	m_spriteFont = TestRenderer->GetSpriteFont();
+	m_d3dContext = TestRenderer->GetDeviceContext();
 }
 
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
@@ -178,10 +178,10 @@ void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color)
 
 void DebugDraw::DrawString(int x, int y, const char *string, ...)
 {
-	CubeRenderer ^cubeRenderer = CubeRenderer::GetInstance();
-	if(cubeRenderer->GetTextEnable())
+	TestRenderer ^TestRenderer = TestRenderer::GetInstance();
+	if(TestRenderer->GetTextEnable())
 	{
-		bool primitiveBeginning = cubeRenderer->IsPrimitiveBeginning();
+		bool primitiveBeginning = TestRenderer->IsPrimitiveBeginning();
 		if(primitiveBeginning)
 			m_renderer->End();
 			
@@ -233,10 +233,10 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 
 void DebugDraw::DrawString(const b2Vec2& p, const char *string, ...)
 {
-	CubeRenderer ^cubeRenderer = CubeRenderer::GetInstance();
-	if(cubeRenderer->GetTextEnable())
+	TestRenderer ^TestRenderer = TestRenderer::GetInstance();
+	if(TestRenderer->GetTextEnable())
 	{
-		bool primitiveBeginning = cubeRenderer->IsPrimitiveBeginning();
+		bool primitiveBeginning = TestRenderer->IsPrimitiveBeginning();
 		if(primitiveBeginning)
 			m_renderer->End();
 

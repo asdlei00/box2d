@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "pch.h"
-#include "CubeRenderer.h"
+#include "TestRenderer.h"
 #include "Testbed/Framework/Test.h"
 
 ref class TestbedWinRT sealed : public Windows::ApplicationModel::Core::IFrameworkView
@@ -43,7 +43,7 @@ private:
 
 	int m_currentHighlightedX;
 	int m_currentHighlightedY;
-	CubeRenderer^ m_renderer;
+	TestRenderer^ m_renderer;
 	AppState m_appState;
 	bool m_windowClosed;
 	bool m_windowVisible;

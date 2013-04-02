@@ -29,7 +29,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{36fd5955-d521-454c-8aa5-565a7ad75f12}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>Box2DLib</ProjectName>
+    <ProjectName>Box2D</ProjectName>
     <RootNamespace>Box2DLib</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>

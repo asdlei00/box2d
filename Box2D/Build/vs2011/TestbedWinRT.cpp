@@ -70,7 +70,7 @@ void TestbedWinRT::Initialize(CoreApplicationView^ applicationView)
 	CoreApplication::Resuming +=
         ref new EventHandler<Platform::Object^>(this, &TestbedWinRT::OnResuming);
 
-	m_renderer = CubeRenderer::GetInstance();
+	m_renderer = TestRenderer::GetInstance();
 }
 
 void TestbedWinRT::SetWindow(CoreWindow^ window)
@@ -147,6 +147,8 @@ void TestbedWinRT::Run()
 			CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
 			timer->Update();
 			m_renderer->Update(timer->Total, timer->Delta);
+
+			//this doesn't actually do anything other than clear the screen to blue
 			m_renderer->Render();
 
 			BasicEffect *basicEffect = m_renderer->GetBasicEffect();
@@ -156,29 +158,38 @@ void TestbedWinRT::Run()
 
 			auto context = m_renderer->GetDeviceContext();
 			auto drawer = m_renderer->GetBatchDrawer();
-			//basicEffect->Apply(context);
 
 			settings.hz = settingsHz;
 			//test->Step(&settings);
 			std::vector<Test*>::iterator testIt = tests.begin();
 			//float aspect = (float)tw / th;
 
+			//handling the app logic in grid mode
 			if(m_appState == AppState::GRID)
 			{
+				//don't draw any text in grid mode
 				m_renderer->SetTextEnable(false);
+
+				//save the current width and height to set the viewport back to it later
 				float oldWidth = width;
 				float oldHeight = height;
+
 				float viewportHeight = height/5.0f;
 				float viewportWidth = width/10.0f;
 				float aspect = viewportWidth / viewportHeight;
+
+				//zoom in on the gridded demos so they're easier to see
 				height = height * 0.05f;
 				width = height * aspect;
 				m_renderer->GetBasicEffect()->SetProjection(XMMatrixOrthographicRH(width, height, -1, 1));
 				m_renderer->GetBasicEffect()->Apply(context);
+
+				//draw all the demos
 				for(unsigned i = 0; i < 5; ++i)
 				{
 					for(unsigned j = 0; j < 10; ++j)
 					{
+						//sets the drawing area for each demo to its own spot
 						D3D11_VIEWPORT viewport;
 						viewport.Width = viewportWidth;
 						viewport.Height = viewportHeight;
@@ -187,11 +198,14 @@ void TestbedWinRT::Run()
 						viewport.TopLeftX = j * viewportWidth;
 						viewport.TopLeftY = i * viewportHeight;
 						context->RSSetViewports(1, &viewport);
+
+						//start a new batch of stuff to render
 						m_renderer->BeginPrimitive();
 						b2Vec2 oldCenter = settings.viewCenter;
 						(*testIt)->Step(&settings);
 
 #if 0
+						//the step can potentially changed the camera and zoom so resize if it does
 						if (oldCenter.x != settings.viewCenter.x || oldCenter.y != settings.viewCenter.y)
 						{
 							Resize(width, height);
@@ -200,6 +214,8 @@ void TestbedWinRT::Run()
 #endif // 0
 						++testIt;
 						m_renderer->EndPrimitive();
+
+						//the final demo is invalid so it needs to break when that happens
 						if(testIt == tests.end())
 							break;
 					}
@@ -224,7 +240,7 @@ void TestbedWinRT::Run()
 				//}
 
 #if 1
-				//draw the grid
+				//sets the viewport back to cover the whole screen with the origin in the upper left and positive y going down
 				D3D11_VIEWPORT viewport;
 				viewport.Width = (float)width;
 				viewport.Height = (float)height;
@@ -235,6 +251,8 @@ void TestbedWinRT::Run()
 				context->RSSetViewports(1, &viewport);
 				m_renderer->GetBasicEffect()->SetProjection(XMMatrixOrthographicOffCenterRH(0, (float)width, (float)height, 0, -1, 1));
 				m_renderer->GetBasicEffect()->Apply(context);
+
+				//draw the grid
 				drawer->Begin();
 				for(unsigned i = 0; i <= 5; ++i)
 				{
@@ -269,6 +287,7 @@ void TestbedWinRT::Run()
 				//Resize(width, height);  
 
 			}
+			//handling app logic when zoomed in on a demo
 			else
 			{
 				m_renderer->SetTextEnable(true);
@@ -618,9 +637,9 @@ void TestbedWinRT::Resize(float w, float h)
 	b2Vec2 upper = settings.viewCenter + extents;
 
 	// L/R/B/T
-	BasicEffect *effect = CubeRenderer::GetInstance()->GetBasicEffect();
+	BasicEffect *effect = TestRenderer::GetInstance()->GetBasicEffect();
 	effect->SetProjection(XMMatrixOrthographicOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1));
-	effect->Apply(CubeRenderer::GetInstance()->GetDeviceContext());
+	effect->Apply(TestRenderer::GetInstance()->GetDeviceContext());
 }
 
 IFrameworkView^ Direct3DApplicationSource::CreateView()

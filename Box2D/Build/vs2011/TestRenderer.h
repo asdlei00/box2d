@@ -16,7 +16,7 @@ struct ModelViewProjectionConstantBuffer
 };
 
 // This class renders a simple spinning cube.
-ref class CubeRenderer : public Direct3DBase
+ref class TestRenderer : public Direct3DBase
 {
 public:
 
@@ -29,8 +29,8 @@ public:
 	// Method for updating time-dependent objects.
 	void Update(float timeTotal, float timeDelta);
 
-	// Get CubeRenderer singleton
-	static CubeRenderer ^GetInstance();
+	// Get TestRenderer singleton
+	static TestRenderer ^GetInstance();
 
 	bool GetTextEnable() { return m_enableText; }
 	void SetTextEnable(bool enable) { m_enableText = enable; }
@@ -48,9 +48,9 @@ internal:
 	ID3D11DeviceContext *GetDeviceContext() { return m_d3dContext.Get(); }
 
 private:
-	CubeRenderer();
+	TestRenderer();
 
-	static CubeRenderer ^m_instance;
+	static TestRenderer ^m_instance;
 
 	ModelViewProjectionConstantBuffer m_constantBufferData;
 	std::unique_ptr<DirectX::CommonStates> m_commonStates;
