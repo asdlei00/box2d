@@ -120,6 +120,7 @@
     <Image Include="Assets\SplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Testbed\Framework\Test.h" />
     <ClInclude Include="RenderWinRT.h" />
     <ClInclude Include="TestbedWinRT.h" />
     <ClInclude Include="TestRenderer.h" />
@@ -169,7 +170,6 @@
     <ClInclude Include="Tests\ShapeEditing.h" />
     <ClInclude Include="Tests\SliderCrank.h" />
     <ClInclude Include="Tests\SphereStack.h" />
-    <ClInclude Include="Tests\Test.h" />
     <ClInclude Include="Tests\TheoJansen.h" />
     <ClInclude Include="Tests\Tiles.h" />
     <ClInclude Include="Tests\TimeOfImpact.h" />
@@ -180,20 +180,18 @@
     <ClInclude Include="Tests\Web.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Testbed\Framework\Test.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\Testbed\Tests\TestEntries.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="RenderWinRT.cpp" />
     <ClCompile Include="TestbedWinRT.cpp" />
     <ClCompile Include="TestRenderer.cpp" />
     <ClCompile Include="Direct3DBase.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Tests\Test.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Tests\TestEntries.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -28,13 +28,13 @@
     <ClCompile Include="Direct3DBase.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="RenderWinRT.cpp" />
-    <ClCompile Include="Tests\Test.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="Tests\TestEntries.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="TestRenderer.cpp" />
+    <ClCompile Include="..\..\Testbed\Tests\TestEntries.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Testbed\Framework\Test.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestbedWinRT.h" />
@@ -169,9 +169,6 @@
     <ClInclude Include="Tests\SphereStack.h">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="Tests\Test.h">
-      <Filter>Tests</Filter>
-    </ClInclude>
     <ClInclude Include="Tests\TheoJansen.h">
       <Filter>Tests</Filter>
     </ClInclude>
@@ -197,6 +194,9 @@
       <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="TestRenderer.h" />
+    <ClInclude Include="..\..\Testbed\Framework\Test.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
