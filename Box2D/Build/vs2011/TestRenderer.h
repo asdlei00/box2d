@@ -46,6 +46,7 @@ internal:
 	DirectX::SpriteBatch *GetSpriteBatch() { return m_spriteBatch.get(); }
 	DirectX::SpriteFont *GetSpriteFont() { return m_spriteFont.get(); }
 	ID3D11DeviceContext *GetDeviceContext() { return m_d3dContext.Get(); }
+	ID3D11InputLayout *GetInputLayout() { return m_inputLayout.Get(); }
 
 private:
 	TestRenderer();

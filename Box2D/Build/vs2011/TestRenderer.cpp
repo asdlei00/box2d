@@ -135,11 +135,13 @@ TestRenderer ^TestRenderer::GetInstance()
 void TestRenderer::BeginPrimitive()
 {
 	m_beginPrimitive = true;
+	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
 	m_batchDrawer->Begin();
 }
 
 void TestRenderer::EndPrimitive()
 {
 	m_beginPrimitive = false;
+	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
 	m_batchDrawer->End();
 }

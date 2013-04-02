@@ -178,12 +178,12 @@ void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color)
 
 void DebugDraw::DrawString(int x, int y, const char *string, ...)
 {
-	TestRenderer ^TestRenderer = TestRenderer::GetInstance();
-	if(TestRenderer->GetTextEnable())
+	TestRenderer ^testRenderer = TestRenderer::GetInstance();
+	if(testRenderer->GetTextEnable())
 	{
-		bool primitiveBeginning = TestRenderer->IsPrimitiveBeginning();
+		bool primitiveBeginning = testRenderer->IsPrimitiveBeginning();
 		if(primitiveBeginning)
-			m_renderer->End();
+			testRenderer->EndPrimitive();
 			
 		char buffer[128];
 
@@ -202,8 +202,12 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 
 		TestbedWinRT::Resize(0, 0);
 		m_d3dContext->RSSetState(m_commonStates->CullClockwise());
+		m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), nullptr, 0xffffffff);
 		if(primitiveBeginning)
-			m_renderer->Begin();
+		{
+			m_basicEffect->Apply(m_d3dContext);
+			testRenderer->BeginPrimitive();
+		}
 	}
 
 	//glMatrixMode(GL_PROJECTION);
@@ -233,10 +237,10 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 
 void DebugDraw::DrawString(const b2Vec2& p, const char *string, ...)
 {
-	TestRenderer ^TestRenderer = TestRenderer::GetInstance();
-	if(TestRenderer->GetTextEnable())
+	TestRenderer ^testRenderer = TestRenderer::GetInstance();
+	if(testRenderer->GetTextEnable())
 	{
-		bool primitiveBeginning = TestRenderer->IsPrimitiveBeginning();
+		bool primitiveBeginning = testRenderer->IsPrimitiveBeginning();
 		if(primitiveBeginning)
 			m_renderer->End();
 
@@ -257,7 +261,10 @@ void DebugDraw::DrawString(const b2Vec2& p, const char *string, ...)
 	
 		m_d3dContext->RSSetState(m_commonStates->CullClockwise());
 		if(primitiveBeginning)
+		{
+			m_basicEffect->Apply(m_d3dContext);
 			m_renderer->Begin();
+		}
 	}
 	//glColor3f(0.5f, 0.9f, 0.5f);
 	//glRasterPos2f(p.x, p.y);
