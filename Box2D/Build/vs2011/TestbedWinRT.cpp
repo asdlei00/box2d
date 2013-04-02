@@ -258,9 +258,9 @@ void TestbedWinRT::Run()
 				{
 					for(unsigned j = 0; j <= 10; ++j)
 					{
-						drawer->DrawLine(VertexPositionColor(XMFLOAT3(j * viewportWidth, 0, 0), XMFLOAT4(1, 1, 1, 1)), VertexPositionColor(XMFLOAT3(j * viewportWidth, 1000, 0), XMFLOAT4(1, 1, 1, 1)));
+						drawer->DrawLine(VertexPositionColor(XMFLOAT3(j * viewportWidth, 0, 0), XMFLOAT4(1, 1, 1, 1)), VertexPositionColor(XMFLOAT3(j * viewportWidth, height, 0), XMFLOAT4(1, 1, 1, 1)));
 					}
-					drawer->DrawLine(VertexPositionColor(XMFLOAT3(0, i *viewportHeight, 0), XMFLOAT4(1, 1, 1, 1)), VertexPositionColor(XMFLOAT3(2000, i *viewportHeight, 0), XMFLOAT4(1, 1, 1, 1)));
+					drawer->DrawLine(VertexPositionColor(XMFLOAT3(0, i *viewportHeight, 0), XMFLOAT4(1, 1, 1, 1)), VertexPositionColor(XMFLOAT3(width, i *viewportHeight, 0), XMFLOAT4(1, 1, 1, 1)));
 				}
 
 				//draw the highlighted square
