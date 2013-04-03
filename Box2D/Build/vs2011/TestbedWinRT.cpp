@@ -104,7 +104,7 @@ void TestbedWinRT::SetWindow(CoreWindow^ window)
 	window->KeyUp +=
 		ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &TestbedWinRT::OnKeyUp);
 
-	m_renderer->Initialize(CoreWindow::GetForCurrentThread());
+	m_renderer->Initialize(CoreWindow::GetForCurrentThread(), DisplayProperties::LogicalDpi);
 
 	Windows::Foundation::Rect windowBounds = window->Bounds;
 	float windowWidth = m_renderer->ConvertDipsToPixels(windowBounds.Width);

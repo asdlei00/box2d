@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Direct3DBase.h"
+#include "DirectXBase.h"
 #include "CommonStates.h"
 #include "Effects.h"
 #include "PrimitiveBatch.h"
@@ -16,7 +16,7 @@ struct ModelViewProjectionConstantBuffer
 };
 
 // This class renders a simple spinning cube.
-ref class TestRenderer : public Direct3DBase
+ref class TestRenderer : public DirectXBase
 {
 public:
 

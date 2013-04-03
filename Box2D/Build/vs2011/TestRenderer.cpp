@@ -18,7 +18,7 @@ TestRenderer::TestRenderer()
 
 void TestRenderer::CreateDeviceResources()
 {
-	Direct3DBase::CreateDeviceResources();
+	DirectXBase::CreateDeviceResources();
 
 	m_commonStates.reset(new DirectX::CommonStates(m_d3dDevice.Get()));
 	m_basicEffect.reset(new DirectX::BasicEffect(m_d3dDevice.Get()));
@@ -50,7 +50,7 @@ void TestRenderer::CreateDeviceResources()
 
 void TestRenderer::CreateWindowSizeDependentResources()
 {
-	Direct3DBase::CreateWindowSizeDependentResources();
+	DirectXBase::CreateWindowSizeDependentResources();
 
 	//float aspectRatio = m_windowBounds.Width / m_windowBounds.Height;
 	//float fovAngleY = 70.0f * XM_PI / 180.0f;
@@ -75,7 +75,7 @@ void TestRenderer::CreateWindowSizeDependentResources()
 
 void TestRenderer::UpdateForWindowSizeChange()
 {
-	Direct3DBase::UpdateForWindowSizeChange();
+	DirectXBase::UpdateForWindowSizeChange();
 
 	m_basicEffect->SetProjection(XMMatrixOrthographicRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1));
 }
@@ -96,12 +96,12 @@ void TestRenderer::Render()
 {
 	const float midnightBlue[] = { 0.098f, 0.098f, 0.439f, 1.000f };
 	m_d3dContext->ClearRenderTargetView(
-		m_renderTargetView.Get(),
+		m_d3dRenderTargetView.Get(),
 		midnightBlue
 		);
 
 	m_d3dContext->ClearDepthStencilView(
-		m_depthStencilView.Get(),
+		m_d3dDepthStencilView.Get(),
 		D3D11_CLEAR_DEPTH,
 		1.0f,
 		0
@@ -109,8 +109,8 @@ void TestRenderer::Render()
 
 	m_d3dContext->OMSetRenderTargets(
 		1,
-		m_renderTargetView.GetAddressOf(),
-		m_depthStencilView.Get()
+		m_d3dRenderTargetView.GetAddressOf(),
+		m_d3dDepthStencilView.Get()
 		);
 		
 	m_d3dContext->IASetInputLayout(m_inputLayout.Get());

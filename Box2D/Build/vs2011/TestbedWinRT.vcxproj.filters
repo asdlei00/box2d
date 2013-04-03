@@ -25,7 +25,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestbedWinRT.cpp" />
-    <ClCompile Include="Direct3DBase.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="RenderWinRT.cpp" />
     <ClCompile Include="TestRenderer.cpp" />
@@ -35,11 +34,11 @@
     <ClCompile Include="..\..\Testbed\Framework\Test.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="DirectXBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestbedWinRT.h" />
     <ClInclude Include="DirectXHelper.h" />
-    <ClInclude Include="Direct3DBase.h" />
     <ClInclude Include="BasicTimer.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderWinRT.h" />
@@ -197,6 +196,7 @@
     <ClInclude Include="..\..\Testbed\Framework\Test.h">
       <Filter>Tests</Filter>
     </ClInclude>
+    <ClInclude Include="DirectXBase.h" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
