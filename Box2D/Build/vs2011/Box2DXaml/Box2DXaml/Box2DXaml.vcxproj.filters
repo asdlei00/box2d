@@ -22,6 +22,9 @@
     <Image Include="Assets\SplashScreen.png">
       <Filter>Assets</Filter>
     </Image>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{5ad778b2-a90a-48f2-a090-09aaa4967700}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
@@ -32,6 +35,15 @@
     <ClCompile Include="DirectXPage.xaml.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="..\..\DirectXBase.cpp" />
+    <ClCompile Include="..\..\RenderWinRT.cpp" />
+    <ClCompile Include="..\..\..\..\Testbed\Tests\TestEntries.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Testbed\Framework\Test.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\TestRenderer.cpp" />
+    <ClCompile Include="..\..\TestbedWinRT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -41,6 +53,158 @@
     <ClInclude Include="BasicTimer.h" />
     <ClInclude Include="..\..\DirectXBase.h" />
     <ClInclude Include="..\..\DirectXHelper.h" />
+    <ClInclude Include="..\..\RenderWinRT.h" />
+    <ClInclude Include="..\..\..\..\Testbed\Tests\AddPair.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\ApplyForce.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\BodyTypes.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Breakable.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Bridge.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\BulletTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Cantilever.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Car.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Chain.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\CharacterCollision.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\CollisionFiltering.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\CollisionProcessing.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\CompoundShapes.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Confined.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\ContinuousTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\ConvexHull.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\ConveyorBelt.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\DistanceTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Dominos.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\DumpShell.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\DynamicTreeTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\EdgeShapes.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\EdgeTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Gears.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Mobile.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\MobileBalanced.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\MotorJoint.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\OneSidedPlatform.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Pinball.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\PolyCollision.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\PolyShapes.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Prismatic.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Pulleys.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Pyramid.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\RayCast.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Revolute.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Rope.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\RopeJoint.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\SensorTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\ShapeEditing.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\SliderCrank.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\SphereStack.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\TheoJansen.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Tiles.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\TimeOfImpact.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Tumbler.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\VaryingFriction.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\VaryingRestitution.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\VerticalStack.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Testbed\Tests\Web.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\TestRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
