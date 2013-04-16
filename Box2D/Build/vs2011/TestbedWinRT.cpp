@@ -591,11 +591,6 @@ void TestbedWinRT::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 			}
 		}
 	}
-	else
-	{
-		if(key == VirtualKey::Escape)
-			m_windowClosed = true;
-	}
 }
 
 void TestbedWinRT::OnActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^ args)
