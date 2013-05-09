@@ -121,6 +121,7 @@ void TestbedWinRT::SetWindow(CoreWindow^ window)
 		++testCount;
 	}
 
+
 	testIndex = b2Clamp(testIndex, 0, testCount-1);
 	testSelection = testIndex;
 
@@ -653,10 +654,13 @@ IFrameworkView^ Direct3DApplicationSource::CreateView()
     return ref new TestbedWinRT();
 }
 
+#if 0
 [Platform::MTAThread]
 int main(Platform::Array<Platform::String^>^)
 {
 	auto direct3DApplicationSource = ref new Direct3DApplicationSource();
 	CoreApplication::Run(direct3DApplicationSource);
 	return 0;
-}
+}  
+#endif // 0
+
