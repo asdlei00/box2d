@@ -64,7 +64,6 @@ local.properties
 *.dotCover
 *.pri
 
-lib/cinder_d.lib
 
 ## TODO: If you have NuGet Package Restore enabled, uncomment this
 #packages/

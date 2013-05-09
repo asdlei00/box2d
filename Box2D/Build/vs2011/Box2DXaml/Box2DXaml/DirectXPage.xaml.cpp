@@ -50,6 +50,9 @@ DirectXPage::DirectXPage() :
 	
 	m_eventToken = CompositionTarget::Rendering::add(ref new EventHandler<Object^>(this, &DirectXPage::OnRendering));
 
+
+
+
 	m_timer = ref new BasicTimer();
 }
 
@@ -138,4 +141,46 @@ void DirectXPage::SaveInternalState(IPropertySet^ state)
 void DirectXPage::LoadInternalState(IPropertySet^ state)
 {
 	m_renderer->LoadInternalState(state);
+}
+
+void DirectXPage::OnChecked(Object^ sender, RoutedEventArgs^ e)
+{
+
+	if(sender->Equals(sleepCheckBox)) {
+		bool checked = sleepCheckBox->IsChecked->Value;
+	}
+}
+
+void DirectXPage::OnPause(Object^ sender, RoutedEventArgs^ args)
+{
+	m_renderer->BackgroundColorNext();
+	m_renderNeeded = true;
+}
+
+void DirectXPage::OnRestart(Object^ sender, RoutedEventArgs^ args)
+{
+	m_renderer->BackgroundColorNext();
+	m_renderNeeded = true;
+}
+
+void DirectXPage::OnSingleStep(Object^ sender, RoutedEventArgs^ args)
+{
+	m_renderer->BackgroundColorNext();
+	m_renderNeeded = true;
+}
+
+void DirectXPage::OnTestsComboBoxChanged(Object^ sender, SelectionChangedEventArgs^ e)
+{
+	if(sender->Equals(testsComboBox)) {
+		auto item = testsComboBox->SelectedIndex;
+	}
+}
+
+
+
+
+
+void Box2DXaml::DirectXPage::Slider_ValueChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs^ e)
+{
+
 }

@@ -34,6 +34,11 @@ namespace Box2DXaml
 		void OnOrientationChanged(Platform::Object^ sender);
 		void OnDisplayContentsInvalidated(Platform::Object^ sender);
 		void OnRendering(Object^ sender, Object^ args);
+		void OnChecked(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void OnTestsComboBoxChanged(Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
+		void OnPause(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void OnSingleStep(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void OnRestart(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 
 		Windows::Foundation::EventRegistrationToken m_eventToken;
 
@@ -44,5 +49,6 @@ namespace Box2DXaml
 		bool m_lastPointValid;
 		
 		BasicTimer^ m_timer;
+		void Slider_ValueChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs^ e);
 	};
 }
