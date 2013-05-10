@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "DirectXPage.xaml.h"
+#include <Box2D/Common/b2Math.h>
 
 using namespace Box2DXaml;
 
@@ -145,7 +146,6 @@ void DirectXPage::LoadInternalState(IPropertySet^ state)
 
 void DirectXPage::OnChecked(Object^ sender, RoutedEventArgs^ e)
 {
-
 	if(sender->Equals(sleepCheckBox)) {
 		bool checked = sleepCheckBox->IsChecked->Value;
 	}
@@ -167,6 +167,31 @@ void DirectXPage::OnSingleStep(Object^ sender, RoutedEventArgs^ args)
 {
 	m_renderer->BackgroundColorNext();
 	m_renderNeeded = true;
+}
+
+int DirectXPage::ValidateNumber(TextBox^ box, int min, int max) {
+
+	int value = 0;
+	if(box->Text->Length() > 0) 
+	{
+		value = _wtoi(box->Text->Data());
+		int newValue = b2Clamp(value, 0, 10);
+		if(newValue != value) 
+		{
+			box->Text = newValue.ToString();
+			box->Select(box->Text->Length(), 0);
+			value = newValue;
+		}
+	}
+	return value;
+}
+
+void DirectXPage::OnTextChanged(Object^ sender, Windows::UI::Xaml::Controls::TextChangedEventArgs^ e)
+{
+	if(sender->Equals(velItersBox)) 
+	{
+		int value = ValidateNumber(velItersBox, 0, 10);
+	}
 }
 
 void DirectXPage::OnTestsComboBoxChanged(Object^ sender, SelectionChangedEventArgs^ e)

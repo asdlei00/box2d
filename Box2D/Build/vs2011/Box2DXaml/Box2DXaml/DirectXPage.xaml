@@ -35,17 +35,17 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                 <TextBlock Text="Vel Iters" Margin="0,10,0,0" Width="100" FontSize="18"/>
-                <TextBox x:Name="velItersBox" Text="1" Width="100" MaxLength="3" InputScope="Number"/>
+                <TextBox x:Name="velItersBox" Text="1" Width="100" MaxLength="3" InputScope="Number" TextChanged="OnTextChanged" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                 <TextBlock Text="Pos Iters" Width="100" FontSize="18"/>
-                <TextBox x:Name="posItersBox" Text="2" Width="100" MaxLength="3" InputScope="Number"/>
+                <TextBox x:Name="posItersBox" Text="2" Width="100" MaxLength="3" InputScope="Number" TextChanged="OnTextChanged" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                 <TextBlock Text="Hertz" Width="100" FontSize="18"/>
-                <TextBox x:Name="hertxBox" Text="3" Width="100" MaxLength="3" InputScope="Number"/>
+                <TextBox x:Name="hertzBox" Text="3" Width="100" MaxLength="3" InputScope="Number" TextChanged="OnTextChanged" />
             </StackPanel>
 
             <CheckBox x:Name="sleepCheckBox" Content="Sleep" Checked="OnChecked" Unchecked="OnChecked"/>

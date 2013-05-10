@@ -39,6 +39,9 @@ namespace Box2DXaml
 		void OnPause(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void OnSingleStep(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void OnRestart(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void OnTextChanged(Object^ sender, Windows::UI::Xaml::Controls::TextChangedEventArgs^ e); 
+
+		int ValidateNumber(Windows::UI::Xaml::Controls::TextBox^ box, int min, int max);
 
 		Windows::Foundation::EventRegistrationToken m_eventToken;
 
