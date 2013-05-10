@@ -168,9 +168,41 @@ void DirectXPage::LoadInternalState(IPropertySet^ state)
 
 void DirectXPage::OnChecked(Object^ sender, RoutedEventArgs^ e)
 {
+	CheckBox ^cb = dynamic_cast<CheckBox ^>(sender);
+	int checked = cb->IsChecked->Value ? 1 : 0;
+
+
 	if(sender->Equals(sleepCheckBox)) {
-		bool checked = sleepCheckBox->IsChecked->Value;
+		m_renderer->SetSetting(TestSettings::SLEEP,checked);
+	} else if(sender->Equals(warmStartingCheckBox)) {
+		m_renderer->SetSetting(TestSettings::WARM_STARTING,checked);
+	} else if(sender->Equals(timeOfImpactCheckBox)) {
+		m_renderer->SetSetting(TestSettings::TIME_OF_IMPACT,checked);
+	} else if(sender->Equals(subSteppingCheckBox)) {
+		m_renderer->SetSetting(TestSettings::SUB_STEPPING,checked);
+	} else if(sender->Equals(shapesCheckBox)) {
+		m_renderer->SetSetting(TestSettings::SHAPES,checked);
+	} else if(sender->Equals(jointsCheckBox)) {
+		m_renderer->SetSetting(TestSettings::JOINTS,checked);
+	} else if(sender->Equals(aabbsCheckBox)) {
+		m_renderer->SetSetting(TestSettings::AABB,checked);
+	} else if(sender->Equals(contactPointsCheckBox)) {
+		m_renderer->SetSetting(TestSettings::CONTACT_POINTS,checked);
+	} else if(sender->Equals(contactNormalsCheckBox)) {
+		m_renderer->SetSetting(TestSettings::CONTACT_NORMALS,checked);
+	} else if(sender->Equals(contactImpulsesCheckBox)) {
+		m_renderer->SetSetting(TestSettings::CONTACT_IMPULSES,checked);
+	} else if(sender->Equals(frictionImpulsesCheckBox)) {
+		m_renderer->SetSetting(TestSettings::FRICTION_IMPULSES,checked);
+	} else if(sender->Equals(comCheckBox)) {
+		m_renderer->SetSetting(TestSettings::CENTER_OF_MASSES,checked);
+	} else if(sender->Equals(statisticsCheckBox)) {
+		m_renderer->SetSetting(TestSettings::STATISTICS,checked);
+	} else if(sender->Equals(profileCheckBox)) {
+		m_renderer->SetSetting(TestSettings::PROFILE,checked);
 	}
+
+
 }
 
 void DirectXPage::updatePauseButton()

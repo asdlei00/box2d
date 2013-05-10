@@ -25,8 +25,7 @@ namespace Box2DSettings {
 	const int HERTZ_MAX = 100;
 
 	public enum class TestSettings {
-		CURRENT_TEST = 0,
-		VEL_ITERS,
+		VEL_ITERS = 0,
 		POS_ITERS,
 		HERTZ,
 		SLEEP,
@@ -77,6 +76,7 @@ public:
 	bool IsPrimitiveBeginning() { return m_beginPrimitive; }
 
 	int GetSetting(Box2DSettings::TestSettings s);
+	void SetSetting(Box2DSettings::TestSettings s, int value);
 	void SetTest(int index);
 	void Restart();
 	void Pause();

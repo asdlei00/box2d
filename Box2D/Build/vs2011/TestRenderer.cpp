@@ -242,9 +242,6 @@ void TestRenderer::SetTest(int index)
 int TestRenderer::GetSetting(TestSettings s) 
 {
 	switch(s) {
-	case TestSettings::CURRENT_TEST:
-		return m_currentTestIndex;
-		break;
 
 	case TestSettings::VEL_ITERS:
 		return m_settings.velocityIterations;
@@ -316,6 +313,86 @@ int TestRenderer::GetSetting(TestSettings s)
 
 	case TestSettings::PAUSED:
 		return m_settings.pause;
+		break;	
+	default:
+		throw new std::exception("Invalid Box2D setting");
+		break;
+	}
+};
+
+void TestRenderer::SetSetting(TestSettings s, int value) 
+{
+	switch(s) {
+	case TestSettings::VEL_ITERS:
+		m_settings.velocityIterations = b2Clamp(value,VEL_ITERS_MIN, VEL_ITERS_MAX);
+		break;
+
+	case TestSettings::POS_ITERS:
+		m_settings.positionIterations = b2Clamp(value,POS_ITERS_MIN, POS_ITERS_MAX);
+		break;
+
+	case TestSettings::HERTZ:
+		m_settings.hz = (float)b2Clamp(value,HERTZ_MIN, HERTZ_MAX);
+		break;
+
+	case TestSettings::SLEEP:
+		m_settings.enableSleep = value != 0 ? 1 : 0;
+		break;
+
+	case TestSettings::WARM_STARTING:
+		m_settings.enableWarmStarting = value != 0 ? 1 : 0;
+		break;
+
+	case TestSettings::TIME_OF_IMPACT:
+		m_settings.enableContinuous = value != 0 ? 1 : 0;
+		break;
+
+	case TestSettings::SUB_STEPPING:
+		m_settings.enableSubStepping = value != 0 ? 1 : 0;
+		break;
+
+	case TestSettings::SHAPES:
+		m_settings.drawShapes = value != 0 ? 1 : 0;
+		break;
+
+	case TestSettings::JOINTS:
+		m_settings.drawJoints = value != 0 ? 1 : 0;
+		break;	
+
+	case TestSettings::AABB:
+		m_settings.drawAABBs = value != 0 ? 1 : 0;
+		break;			
+
+	case TestSettings::CONTACT_POINTS:
+		m_settings.drawContactPoints = value != 0 ? 1 : 0;
+		break;	
+
+	case TestSettings::CONTACT_NORMALS:
+		m_settings.drawContactNormals = value != 0 ? 1 : 0;
+		break;	
+
+	case TestSettings::CONTACT_IMPULSES:
+		m_settings.drawContactImpulse = value != 0 ? 1 : 0;
+		break;	
+
+	case TestSettings::FRICTION_IMPULSES:
+		m_settings.drawFrictionImpulse = value != 0 ? 1 : 0;
+		break;	
+
+	case TestSettings::CENTER_OF_MASSES:
+		m_settings.drawCOMs = value != 0 ? 1 : 0;
+		break;		
+
+	case TestSettings::STATISTICS:
+		m_settings.drawStats = value != 0 ? 1 : 0;
+		break;	
+
+	case TestSettings::PROFILE:
+		m_settings.drawProfile = value != 0 ? 1 : 0;
+		break;	
+
+	case TestSettings::PAUSED:
+		m_settings.pause = value != 0 ? 1 : 0;
 		break;	
 	default:
 		throw new std::exception("Invalid Box2D setting");
