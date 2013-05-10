@@ -146,14 +146,16 @@ void DirectXPage::OnRendering(Object^ sender, Object^ args)
 	m_renderer->Present();
 }
 
-void DirectXPage::OnPreviousColorPressed(Object^ sender, RoutedEventArgs^ args)
+void DirectXPage::OnPreviousTestPressed(Object^ sender, RoutedEventArgs^ args)
 {
-	//m_renderer->BackgroundColorPrevious();
+	m_renderer->PreviousTest();
+	testsComboBox->SelectedIndex = m_renderer->GetCurrentTest();
 }
 
-void DirectXPage::OnNextColorPressed(Object^ sender, RoutedEventArgs^ args)
+void DirectXPage::OnNextTestPressed(Object^ sender, RoutedEventArgs^ args)
 {
-	//m_renderer->BackgroundColorNext();
+	m_renderer->NextTest();
+	testsComboBox->SelectedIndex = m_renderer->GetCurrentTest();
 }
 
 void DirectXPage::SaveInternalState(IPropertySet^ state)
@@ -170,7 +172,6 @@ void DirectXPage::OnChecked(Object^ sender, RoutedEventArgs^ e)
 {
 	CheckBox ^cb = dynamic_cast<CheckBox ^>(sender);
 	int checked = cb->IsChecked->Value ? 1 : 0;
-
 
 	if(sender->Equals(sleepCheckBox)) {
 		m_renderer->SetSetting(TestSettings::SLEEP,checked);
@@ -201,8 +202,6 @@ void DirectXPage::OnChecked(Object^ sender, RoutedEventArgs^ e)
 	} else if(sender->Equals(profileCheckBox)) {
 		m_renderer->SetSetting(TestSettings::PROFILE,checked);
 	}
-
-
 }
 
 void DirectXPage::updatePauseButton()

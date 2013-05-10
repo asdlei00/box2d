@@ -238,6 +238,24 @@ void TestRenderer::SetTest(int index)
 	m_currentTest = g_testEntries[m_currentTestIndex].createFcn();
 }
 
+void TestRenderer::PreviousTest() 
+{
+	m_currentTestIndex++;
+	if(m_currentTestIndex >= m_numTests) {
+		m_currentTestIndex = 0;
+	}
+	SetTest(m_currentTestIndex);
+}
+
+void TestRenderer::NextTest() 
+{
+	m_currentTestIndex--;
+	if(m_currentTestIndex < 0) {
+		m_currentTestIndex = m_numTests - 1;
+	}
+	SetTest(m_currentTestIndex);
+}
+
 
 int TestRenderer::GetSetting(TestSettings s) 
 {

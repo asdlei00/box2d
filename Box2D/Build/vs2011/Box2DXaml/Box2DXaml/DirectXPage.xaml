@@ -56,15 +56,15 @@
                     <Button Style="{StaticResource AppBarButtonStyle}" 
                             Tag="Previous" 
                             AutomationProperties.AutomationId="PreviousAppBarButton" Content="&#xE112;"  
-                            AutomationProperties.Name="Previous Color" 
-                            Click="OnPreviousColorPressed"/>
+                            AutomationProperties.Name="Previous Test"
+                            Click="OnPreviousTestPressed"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Style="{StaticResource AppBarButtonStyle}" 
                             Tag="Next" 
                             AutomationProperties.AutomationId="NextAppBarButton" Content="&#xE111;"  
-                            AutomationProperties.Name="Next Color" 
-                            Click="OnNextColorPressed"/>
+                            AutomationProperties.Name="Next Test" 
+                            Click="OnNextTestPressed"/>
                 </StackPanel>
             </Grid>
         </AppBar>

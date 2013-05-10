@@ -68,6 +68,9 @@ public:
 	void SaveInternalState(Windows::Foundation::Collections::IPropertySet^ state);
 	void LoadInternalState(Windows::Foundation::Collections::IPropertySet^ state);
 
+	void PreviousTest();
+	void NextTest();
+
 	bool GetTextEnable() { return m_enableText; }
 	int GetCurrentTest() { return m_currentTestIndex; }
 	void SetTextEnable(bool enable) { m_enableText = enable; }

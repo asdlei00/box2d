@@ -20,8 +20,8 @@ namespace Box2DXaml
 	public:
 		DirectXPage();
 
-		void OnPreviousColorPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void OnNextColorPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void OnPreviousTestPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void OnNextTestPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 
 		void SaveInternalState(Windows::Foundation::Collections::IPropertySet^ state);
 		void LoadInternalState(Windows::Foundation::Collections::IPropertySet^ state);
