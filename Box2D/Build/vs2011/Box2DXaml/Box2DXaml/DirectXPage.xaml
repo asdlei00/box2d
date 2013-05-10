@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <SwapChainBackgroundPanel x:Name="SwapChainPanel" PointerMoved="OnPointerMoved" PointerReleased="OnPointerReleased">
+    <SwapChainBackgroundPanel x:Name="SwapChainPanel" PointerMoved="OnPointerMoved" PointerPressed="OnPointerPressed" PointerReleased="OnPointerReleased">
         <StackPanel HorizontalAlignment="Right" Margin="10,10,20,20">
             <TextBlock Text="Tests" FontSize="20"/>
             <ComboBox x:Name="testsComboBox" Width="200" SelectionChanged="OnTestsComboBoxChanged"></ComboBox>
@@ -50,7 +50,7 @@
         </StackPanel>
     </SwapChainBackgroundPanel>
     <Page.BottomAppBar>
-        <AppBar Padding="10,0,10,0">
+        <AppBar Padding="10,0,10,0" Opacity="0.5">
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <Button Style="{StaticResource AppBarButtonStyle}" 

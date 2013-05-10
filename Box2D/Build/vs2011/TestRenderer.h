@@ -57,7 +57,7 @@ public:
 	virtual void CreateWindowSizeDependentResources() override;
 	virtual void UpdateForWindowSizeChange() override;
 	virtual void Render() override;
-	
+
 	// Method for updating time-dependent objects.
 	void Update(float timeTotal, float timeDelta);
 
@@ -85,6 +85,11 @@ public:
 	void Pause();
 	void SingleStep();
 
+	void ShiftMouseDown(Windows::Foundation::Point position);
+	void MouseDown(Windows::Foundation::Point position);
+	void MouseMove(Windows::Foundation::Point position);
+	void MouseUp(Windows::Foundation::Point position);
+
 internal:
 	//getters for the DirectXTK helpers
 	DirectX::CommonStates *GetCommonStates() { return m_commonStates.get(); }
@@ -105,6 +110,7 @@ private:
 	Settings m_settings;
 	float m_viewZoom;
 	static TestRenderer ^m_instance;
+	b2Vec2 ConvertScreenToWorld(int32 x, int32 y);
 
 	ModelViewProjectionConstantBuffer m_constantBufferData;
 	std::unique_ptr<DirectX::CommonStates> m_commonStates;
@@ -115,4 +121,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	bool m_enableText;
 	bool m_beginPrimitive;
+	float m_width;
+	float m_height;
 };

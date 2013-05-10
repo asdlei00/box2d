@@ -89,6 +89,9 @@ void TestRenderer::UpdateForWindowSizeChange()
 	DirectXBase::UpdateForWindowSizeChange();
 
 	m_basicEffect->SetProjection(XMMatrixOrthographicRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1));
+
+	m_width = ConvertDipsToPixels(m_windowBounds.Width);
+	m_height = ConvertDipsToPixels(m_windowBounds.Height);
 }
 
 void TestRenderer::SaveInternalState(IPropertySet^ state)
@@ -194,7 +197,7 @@ void TestRenderer::EndPrimitive()
 void TestRenderer::Resize()
 {
 
-	float32 ratio = float32(m_windowBounds.Width) / float32(m_windowBounds.Width);
+	float32 ratio = float32(m_windowBounds.Width) / float32(m_windowBounds.Height);
 
 	b2Vec2 extents(ratio * 25.0f, 25.0f);
 	extents *= m_viewZoom;
@@ -253,7 +256,6 @@ void TestRenderer::NextTest()
 	if(m_currentTestIndex < 0) {
 		m_currentTestIndex = m_numTests - 1;
 	}
-	SetTest(m_currentTestIndex);
 }
 
 
@@ -417,4 +419,43 @@ void TestRenderer::SetSetting(TestSettings s, int value)
 		break;
 	}
 };
+
+void TestRenderer::ShiftMouseDown(Point position) {
+	b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
+	m_currentTest->ShiftMouseDown(p);
+
+}
+
+void TestRenderer::MouseDown(Point position) {
+	b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
+	m_currentTest->MouseDown(p);
+}
+
+void TestRenderer::MouseMove(Point position) {
+	b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
+	m_currentTest->MouseMove(p);
+}
+
+void TestRenderer::MouseUp(Point position) {
+	b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
+	m_currentTest->MouseUp(p);
+}
+
+b2Vec2 TestRenderer::ConvertScreenToWorld(int32 x, int32 y)
+{
+	float32 u = x / float32(m_width);
+	float32 v = (m_height - y) / float32(m_height);
+
+	float32 ratio = float32(m_width) / float32(m_height);
+	b2Vec2 extents(ratio * 25.0f, 25.0f);
+	extents *= m_viewZoom;
+
+	b2Vec2 lower = m_settings.viewCenter - extents;
+	b2Vec2 upper = m_settings.viewCenter + extents;
+
+	b2Vec2 p;
+	p.x = (1.0f - u) * lower.x + u * upper.x;
+	p.y = (1.0f - v) * lower.y + v * upper.y;
+	return p;
+}
 

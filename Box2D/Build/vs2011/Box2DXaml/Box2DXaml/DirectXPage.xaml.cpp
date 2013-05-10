@@ -12,6 +12,7 @@ using namespace Box2DXaml;
 using namespace Box2DSettings;
 
 using namespace Platform;
+using namespace Windows::System;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::Graphics::Display;
@@ -26,7 +27,8 @@ using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
 
 DirectXPage::DirectXPage() :
-	m_lastPointValid(false)
+	m_lastPointValid(false),
+	m_mouseDown(false)
 {
 	InitializeComponent();
 
@@ -91,6 +93,7 @@ void DirectXPage::UpdateSettings() {
 
 }
 
+#if 0
 void DirectXPage::OnPointerMoved(Object^ sender, PointerRoutedEventArgs^ args)
 {
 	auto currentPoint = args->GetCurrentPoint(nullptr);
@@ -111,12 +114,48 @@ void DirectXPage::OnPointerMoved(Object^ sender, PointerRoutedEventArgs^ args)
 	{
 		m_lastPointValid = false;
 	}
+}  
+#endif // 0
+
+
+void DirectXPage::OnPointerPressed(Platform::Object^ sender, PointerRoutedEventArgs^ args)
+{
+	// Use the mouse to move things around.
+	auto currentPoint = args->GetCurrentPoint(nullptr);
+
+	VirtualKeyModifiers mod = args->KeyModifiers;
+	if (mod == VirtualKeyModifiers::Shift)
+	{
+		m_renderer->ShiftMouseDown(currentPoint->Position);
+	}
+	else
+	{
+		m_renderer->MouseDown(currentPoint->Position);
+	}
+	m_mouseDown = true;
 }
 
+void DirectXPage::OnPointerReleased(Platform::Object^ sender, PointerRoutedEventArgs^ args)
+{
+	// Use the mouse to move things around.
+	auto currentPoint = args->GetCurrentPoint(nullptr);
+	m_renderer->MouseUp(currentPoint->Position);
+	m_mouseDown = false;
+}
+
+void DirectXPage::OnPointerMoved(Platform::Object^ sender, PointerRoutedEventArgs^ args)
+{
+	auto currentPoint = args->GetCurrentPoint(nullptr);
+	m_renderer->MouseMove(currentPoint->Position);
+}
+
+#if 0
 void DirectXPage::OnPointerReleased(Object^ sender, PointerRoutedEventArgs^ args)
 {
 	m_lastPointValid = false;
-}
+}  
+#endif // 0
+
 
 void DirectXPage::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {

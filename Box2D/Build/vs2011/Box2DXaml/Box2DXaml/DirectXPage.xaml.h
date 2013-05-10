@@ -28,6 +28,7 @@ namespace Box2DXaml
 
 	private:
 		void OnPointerMoved(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
+		void OnPointerPressed(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
 		void OnPointerReleased(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
 		void OnWindowSizeChanged(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::WindowSizeChangedEventArgs^ args);
 		void OnLogicalDpiChanged(Platform::Object^ sender);
@@ -54,5 +55,6 @@ namespace Box2DXaml
 		bool m_lastPointValid;
 		
 		BasicTimer^ m_timer;
+		bool m_mouseDown;
 	};
 }
