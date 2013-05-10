@@ -6,7 +6,7 @@
 #pragma once
 
 #include "DirectXPage.g.h"
-#include "SimpleTextRenderer.h"
+#include "TestRenderer.h"
 #include "BasicTimer.h"
 
 namespace Box2DXaml
@@ -40,18 +40,18 @@ namespace Box2DXaml
 		void OnSingleStep(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void OnRestart(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void OnTextChanged(Object^ sender, Windows::UI::Xaml::Controls::TextChangedEventArgs^ e); 
+		void UpdateSettings();
 
 		int ValidateNumber(Windows::UI::Xaml::Controls::TextBox^ box, int min, int max);
 
 		Windows::Foundation::EventRegistrationToken m_eventToken;
 
-		SimpleTextRenderer^ m_renderer;
+		TestRenderer^ m_renderer;
 		bool m_renderNeeded;
 
 		Windows::Foundation::Point m_lastPoint;
 		bool m_lastPointValid;
 		
 		BasicTimer^ m_timer;
-		void Slider_ValueChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs^ e);
 	};
 }

@@ -6,8 +6,10 @@
 #include "pch.h"
 #include "DirectXPage.xaml.h"
 #include <Box2D/Common/b2Math.h>
+#include "Testbed/Framework/Test.h"
 
 using namespace Box2DXaml;
+using namespace Box2DSettings;
 
 using namespace Platform;
 using namespace Windows::Foundation;
@@ -29,7 +31,7 @@ DirectXPage::DirectXPage() :
 {
 	InitializeComponent();
 
-	m_renderer = ref new SimpleTextRenderer();
+	m_renderer = TestRenderer::GetInstance();
 
 	m_renderer->Initialize(
 		Window::Current->CoreWindow,
@@ -50,13 +52,41 @@ DirectXPage::DirectXPage() :
 		ref new DisplayPropertiesEventHandler(this, &DirectXPage::OnDisplayContentsInvalidated);
 	
 	m_eventToken = CompositionTarget::Rendering::add(ref new EventHandler<Object^>(this, &DirectXPage::OnRendering));
-
-
-
-
+	UpdateSettings();
 	m_timer = ref new BasicTimer();
 }
 
+void DirectXPage::UpdateSettings() {
+	// update the Tests ComboBox with the names of the tests
+	int index = 0;
+	while (g_testEntries[index].createFcn != NULL)
+	{
+		std::string s(g_testEntries[index].name);
+		std::wstring w(s.begin(),s.end());
+		testsComboBox->Items->Append(ref new String(w.c_str()));
+		++index;
+	}
+
+	testsComboBox->SelectedIndex = m_renderer->GetCurrentTest();
+
+	sleepCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::SLEEP) != 0 ? true : false;
+	warmStartingCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::WARM_STARTING) ? true : false;
+	timeOfImpactCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::TIME_OF_IMPACT)  ? true : false;
+	subSteppingCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::SUB_STEPPING) ? true : false;
+	shapesCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::SHAPES) ? true : false;
+	jointsCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::JOINTS) ? true : false;
+	aabbsCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::AABB) ? true : false;
+	contactPointsCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::CONTACT_POINTS) ? true : false;
+	contactNormalsCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::CONTACT_NORMALS) ? true : false;
+	contactImpulsesCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::CONTACT_IMPULSES) ? true : false;
+	frictionImpulsesCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::FRICTION_IMPULSES) ? true : false;
+	comCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::CENTER_OF_MASSES) ? true : false;
+	statisticsCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::STATISTICS) ? true : false;
+	profileCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::PROFILE) ? true : false;
+
+	//Settings s = m_renderer->GetSettings();
+
+}
 
 void DirectXPage::OnPointerMoved(Object^ sender, PointerRoutedEventArgs^ args)
 {
@@ -69,7 +99,7 @@ void DirectXPage::OnPointerMoved(Object^ sender, PointerRoutedEventArgs^ args)
 				currentPoint->Position.X - m_lastPoint.X,
 				currentPoint->Position.Y - m_lastPoint.Y
 				);
-			m_renderer->UpdateTextPosition(delta);
+			//m_renderer->UpdateTextPosition(delta);
 			m_renderNeeded = true;
 		}
 		m_lastPoint = currentPoint->Position;
@@ -124,19 +154,19 @@ void DirectXPage::OnRendering(Object^ sender, Object^ args)
 
 void DirectXPage::OnPreviousColorPressed(Object^ sender, RoutedEventArgs^ args)
 {
-	m_renderer->BackgroundColorPrevious();
+	//m_renderer->BackgroundColorPrevious();
 	m_renderNeeded = true;
 }
 
 void DirectXPage::OnNextColorPressed(Object^ sender, RoutedEventArgs^ args)
 {
-	m_renderer->BackgroundColorNext();
+	//m_renderer->BackgroundColorNext();
 	m_renderNeeded = true;
 }
 
 void DirectXPage::SaveInternalState(IPropertySet^ state)
 {
-	m_renderer->SaveInternalState(state);
+	//m_renderer->SaveInternalState(state);
 }
 
 void DirectXPage::LoadInternalState(IPropertySet^ state)
@@ -153,19 +183,19 @@ void DirectXPage::OnChecked(Object^ sender, RoutedEventArgs^ e)
 
 void DirectXPage::OnPause(Object^ sender, RoutedEventArgs^ args)
 {
-	m_renderer->BackgroundColorNext();
+	//m_renderer->BackgroundColorNext();
 	m_renderNeeded = true;
 }
 
 void DirectXPage::OnRestart(Object^ sender, RoutedEventArgs^ args)
 {
-	m_renderer->BackgroundColorNext();
+	//m_renderer->BackgroundColorNext();
 	m_renderNeeded = true;
 }
 
 void DirectXPage::OnSingleStep(Object^ sender, RoutedEventArgs^ args)
 {
-	m_renderer->BackgroundColorNext();
+	//m_renderer->BackgroundColorNext();
 	m_renderNeeded = true;
 }
 
@@ -188,9 +218,19 @@ int DirectXPage::ValidateNumber(TextBox^ box, int min, int max) {
 
 void DirectXPage::OnTextChanged(Object^ sender, Windows::UI::Xaml::Controls::TextChangedEventArgs^ e)
 {
+	int value = 0;
+
 	if(sender->Equals(velItersBox)) 
 	{
-		int value = ValidateNumber(velItersBox, 0, 10);
+		value = ValidateNumber(velItersBox, 0, 100);
+	}
+	else if(sender->Equals(posItersBox)) 
+	{
+		value = ValidateNumber(posItersBox, 0, 100);
+	}
+	else if(sender->Equals(hertzBox)) 
+	{
+		value = ValidateNumber(hertzBox, 0, 100);
 	}
 }
 
@@ -202,10 +242,3 @@ void DirectXPage::OnTestsComboBoxChanged(Object^ sender, SelectionChangedEventAr
 }
 
 
-
-
-
-void Box2DXaml::DirectXPage::Slider_ValueChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs^ e)
-{
-
-}

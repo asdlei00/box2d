@@ -5,7 +5,9 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 using namespace Windows::Foundation;
+using namespace Windows::Foundation::Collections;
 using namespace Windows::UI::Core;
+using namespace Box2DSettings;
 
 TestRenderer ^TestRenderer::m_instance = nullptr;
 
@@ -14,6 +16,15 @@ TestRenderer::TestRenderer()
 	m_instance = this;
 	m_enableText = true;
 	m_beginPrimitive = false;
+	m_numTests = 0;
+	while (g_testEntries[m_numTests].createFcn != NULL)
+	{
+		++m_numTests;
+	}
+
+	m_currentTest = nullptr;
+	m_currentTestIndex = 0;
+	m_viewZoom = 1.0f;
 }
 
 void TestRenderer::CreateDeviceResources()
@@ -80,6 +91,34 @@ void TestRenderer::UpdateForWindowSizeChange()
 	m_basicEffect->SetProjection(XMMatrixOrthographicRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1));
 }
 
+void TestRenderer::SaveInternalState(IPropertySet^ state)
+{
+#if 0
+	if (state->HasKey("m_backgroundColorIndex"))
+	{
+		state->Remove("m_backgroundColorIndex");
+	}
+	if (state->HasKey("m_textPosition"))
+	{
+		state->Remove("m_textPosition");
+	}
+	state->Insert("m_backgroundColorIndex", PropertyValue::CreateInt32(m_backgroundColorIndex));
+	state->Insert("m_textPosition", PropertyValue::CreatePoint(m_textPosition));
+#endif
+}
+
+void TestRenderer::LoadInternalState(IPropertySet^ state)
+{
+#if 0
+	if (state->HasKey("m_backgroundColorIndex") && state->HasKey("m_textPosition"))
+	{
+		m_backgroundColorIndex = safe_cast<IPropertyValue^>(state->Lookup("m_backgroundColorIndex"))->GetInt32();
+		m_textPosition = safe_cast<IPropertyValue^>(state->Lookup("m_textPosition"))->GetPoint();
+	}  
+#endif // 0
+
+}
+
 void TestRenderer::Update(float timeTotal, float timeDelta)
 {
 	(void) timeDelta; // Unused parameter.
@@ -115,14 +154,20 @@ void TestRenderer::Render()
 		
 	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
 
-	//D3D11_VIEWPORT viewport;
-	//viewport.TopLeftX = 10;
-	//viewport.TopLeftY = 100;
-	//viewport.Width = 200;
-	//viewport.Height = 300;
-	//viewport.MinDepth = 0;
-	//viewport.MaxDepth = 1;
-	//m_d3dContext->RSSetViewports(1, &viewport);
+	BasicEffect *basicEffect = GetBasicEffect();
+	XMMATRIX identity = XMMatrixIdentity();
+	basicEffect->SetView(identity);
+	basicEffect->SetWorld(XMMatrixIdentity());
+
+	if(!m_currentTest) {
+		m_currentTest = g_testEntries[m_currentTestIndex].createFcn();
+	}
+
+	Resize();
+	BeginPrimitive();
+	m_currentTest->Step(&m_settings);
+	EndPrimitive();
+	m_currentTest->DrawTitle(g_testEntries[m_currentTestIndex].name);
 }
 
 TestRenderer ^TestRenderer::GetInstance()
@@ -145,3 +190,100 @@ void TestRenderer::EndPrimitive()
 	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
 	m_batchDrawer->End();
 }
+
+void TestRenderer::Resize()
+{
+
+	float32 ratio = float32(m_windowBounds.Width) / float32(m_windowBounds.Width);
+
+	b2Vec2 extents(ratio * 25.0f, 25.0f);
+	extents *= m_viewZoom;
+
+	b2Vec2 lower = m_settings.viewCenter - extents;
+	b2Vec2 upper = m_settings.viewCenter + extents;
+
+	// L/R/B/T
+	BasicEffect *effect = TestRenderer::GetInstance()->GetBasicEffect();
+	effect->SetProjection(XMMatrixOrthographicOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1));
+	effect->Apply(TestRenderer::GetInstance()->GetDeviceContext());
+}
+
+int TestRenderer::GetSetting(TestSettings s) {
+	switch(s) {
+	case TestSettings::CURRENT_TEST:
+		return m_currentTestIndex;
+		break;
+
+	case TestSettings::VEL_ITERS:
+		return m_settings.velocityIterations;
+		break;
+
+	case TestSettings::POS_ITERS:
+		return m_settings.positionIterations;
+		break;
+
+	case TestSettings::HERTZ:
+		return (int)m_settings.hz;
+		break;
+
+	case TestSettings::SLEEP:
+		return m_settings.enableSleep;
+		break;
+
+	case TestSettings::WARM_STARTING:
+		return m_settings.enableWarmStarting;
+		break;
+
+	case TestSettings::TIME_OF_IMPACT:
+		return m_settings.enableContinuous;
+		break;
+
+	case TestSettings::SUB_STEPPING:
+		return m_settings.enableSubStepping;
+		break;
+
+	case TestSettings::SHAPES:
+		return m_settings.drawShapes;
+		break;
+
+	case TestSettings::JOINTS:
+		return m_settings.drawJoints;
+		break;	
+
+	case TestSettings::AABB:
+		return m_settings.drawAABBs;
+		break;			
+
+	case TestSettings::CONTACT_POINTS:
+		return m_settings.drawContactPoints;
+		break;	
+
+	case TestSettings::CONTACT_NORMALS:
+		return m_settings.drawContactNormals;
+		break;	
+
+	case TestSettings::CONTACT_IMPULSES:
+		return m_settings.drawContactImpulse;
+		break;	
+
+	case TestSettings::FRICTION_IMPULSES:
+		return m_settings.drawFrictionImpulse;
+		break;	
+
+	case TestSettings::CENTER_OF_MASSES:
+		return m_settings.drawCOMs;
+		break;		
+
+	case TestSettings::STATISTICS:
+		return m_settings.drawStats;
+		break;	
+
+	case TestSettings::PROFILE:
+		return m_settings.drawProfile;
+		break;	
+
+	default:
+		break;
+	}
+};
+

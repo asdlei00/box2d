@@ -205,6 +205,9 @@
       <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\TestRenderer.h" />
+    <ClInclude Include="..\..\..\..\Testbed\Framework\Test.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />

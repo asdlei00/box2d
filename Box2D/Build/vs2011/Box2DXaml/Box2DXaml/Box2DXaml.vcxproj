@@ -115,6 +115,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Testbed\Framework\Test.h" />
     <ClInclude Include="..\..\..\..\Testbed\Tests\AddPair.h" />
     <ClInclude Include="..\..\..\..\Testbed\Tests\ApplyForce.h" />
     <ClInclude Include="..\..\..\..\Testbed\Tests\BodyTypes.h" />
