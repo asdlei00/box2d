@@ -208,7 +208,39 @@ void TestRenderer::Resize()
 	effect->Apply(TestRenderer::GetInstance()->GetDeviceContext());
 }
 
-int TestRenderer::GetSetting(TestSettings s) {
+void TestRenderer::Restart() 
+{
+	SetTest(m_currentTestIndex);
+	m_settings.pause = 0;
+	m_settings.singleStep = 0;
+}
+
+void TestRenderer::Pause() 
+{
+	m_settings.pause = !m_settings.pause;
+}
+
+void TestRenderer::SingleStep() 
+{
+	m_settings.pause = 1;
+	m_settings.singleStep = 1;
+}
+
+void TestRenderer::SetTest(int index) 
+{
+	if(m_currentTest) 
+	{
+		delete m_currentTest;
+		m_currentTest = nullptr;
+	}
+
+	m_currentTestIndex = b2Clamp(index, 0, m_numTests-1);
+	m_currentTest = g_testEntries[m_currentTestIndex].createFcn();
+}
+
+
+int TestRenderer::GetSetting(TestSettings s) 
+{
 	switch(s) {
 	case TestSettings::CURRENT_TEST:
 		return m_currentTestIndex;
@@ -282,7 +314,11 @@ int TestRenderer::GetSetting(TestSettings s) {
 		return m_settings.drawProfile;
 		break;	
 
+	case TestSettings::PAUSED:
+		return m_settings.pause;
+		break;	
 	default:
+		throw new std::exception("Invalid Box2D setting");
 		break;
 	}
 };

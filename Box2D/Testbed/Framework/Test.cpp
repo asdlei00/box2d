@@ -278,9 +278,6 @@ void Test::Step(Settings* settings)
 		{
 			timeStep = 0.0f;
 		}
-
-		m_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
-		m_textLine += DRAW_STRING_NEW_LINE;
 	}
 
 	uint32 flags = 0;
@@ -304,6 +301,12 @@ void Test::Step(Settings* settings)
 	if (timeStep > 0.0f)
 	{
 		++m_stepCount;
+	}
+
+	if (settings->pause)
+	{
+		m_debugDraw.DrawString(5, m_textLine, "****PAUSED****");
+		m_textLine += DRAW_STRING_NEW_LINE;
 	}
 
 	if (settings->drawStats)

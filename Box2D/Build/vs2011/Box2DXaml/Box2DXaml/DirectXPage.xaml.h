@@ -37,17 +37,18 @@ namespace Box2DXaml
 		void OnChecked(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void OnTestsComboBoxChanged(Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
 		void OnPause(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void updatePauseButton();
 		void OnSingleStep(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void OnRestart(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void OnTextChanged(Object^ sender, Windows::UI::Xaml::Controls::TextChangedEventArgs^ e); 
 		void UpdateSettings();
 
 		int ValidateNumber(Windows::UI::Xaml::Controls::TextBox^ box, int min, int max);
+		void SetNumberBox(Windows::UI::Xaml::Controls::TextBox^ box, int value);
 
 		Windows::Foundation::EventRegistrationToken m_eventToken;
 
 		TestRenderer^ m_renderer;
-		bool m_renderNeeded;
 
 		Windows::Foundation::Point m_lastPoint;
 		bool m_lastPointValid;

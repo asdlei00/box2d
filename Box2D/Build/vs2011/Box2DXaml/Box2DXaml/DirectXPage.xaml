@@ -43,9 +43,9 @@
             <CheckBox x:Name="statisticsCheckBox" Content="Statistics" Checked="OnChecked" Unchecked="OnChecked"/>
             <CheckBox x:Name="profileCheckBox" Content="Profile" Checked="OnChecked" Unchecked="OnChecked"/>
             <StackPanel HorizontalAlignment="Center" Margin="0,10,0,0">
-                <Button x:Name="pause" Content="Pause" Width="150" Click="OnPause" />
-                <Button x:Name="singleStep" Content="Single Step" Width="150" Click="OnSingleStep" />
-                <Button x:Name="restart" Content="Restart" Width="150" Click="OnRestart" />
+                <Button x:Name="pauseButton" Content="Pause" Width="150" Click="OnPause" />
+                <Button x:Name="stepButton" Content="Single Step" Width="150" Click="OnSingleStep" />
+                <Button x:Name="restartButton" Content="Restart" Width="150" Click="OnRestart" />
             </StackPanel>
         </StackPanel>
     </SwapChainBackgroundPanel>

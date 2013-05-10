@@ -17,6 +17,13 @@ struct ModelViewProjectionConstantBuffer
 };
 
 namespace Box2DSettings {
+	const int VEL_ITERS_MIN = 1;
+	const int VEL_ITERS_MAX = 500;
+	const int POS_ITERS_MIN = 0;
+	const int POS_ITERS_MAX = 100;
+	const int HERTZ_MIN = 5;
+	const int HERTZ_MAX = 100;
+
 	public enum class TestSettings {
 		CURRENT_TEST = 0,
 		VEL_ITERS,
@@ -36,6 +43,7 @@ namespace Box2DSettings {
 		CENTER_OF_MASSES,
 		STATISTICS,
 		PROFILE,
+		PAUSED,
 		NUM_SETTINGS
 	};
 }
@@ -69,6 +77,10 @@ public:
 	bool IsPrimitiveBeginning() { return m_beginPrimitive; }
 
 	int GetSetting(Box2DSettings::TestSettings s);
+	void SetTest(int index);
+	void Restart();
+	void Pause();
+	void SingleStep();
 
 internal:
 	//getters for the DirectXTK helpers

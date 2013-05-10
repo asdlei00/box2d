@@ -26,7 +26,6 @@ using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
 
 DirectXPage::DirectXPage() :
-	m_renderNeeded(true),
 	m_lastPointValid(false)
 {
 	InitializeComponent();
@@ -69,6 +68,10 @@ void DirectXPage::UpdateSettings() {
 
 	testsComboBox->SelectedIndex = m_renderer->GetCurrentTest();
 
+	SetNumberBox(velItersBox,m_renderer->GetSetting(TestSettings::VEL_ITERS));
+	SetNumberBox(posItersBox,m_renderer->GetSetting(TestSettings::POS_ITERS));
+	SetNumberBox(hertzBox,m_renderer->GetSetting(TestSettings::HERTZ));
+
 	sleepCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::SLEEP) != 0 ? true : false;
 	warmStartingCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::WARM_STARTING) ? true : false;
 	timeOfImpactCheckBox->IsChecked =  m_renderer->GetSetting(TestSettings::TIME_OF_IMPACT)  ? true : false;
@@ -100,7 +103,6 @@ void DirectXPage::OnPointerMoved(Object^ sender, PointerRoutedEventArgs^ args)
 				currentPoint->Position.Y - m_lastPoint.Y
 				);
 			//m_renderer->UpdateTextPosition(delta);
-			m_renderNeeded = true;
 		}
 		m_lastPoint = currentPoint->Position;
 		m_lastPointValid = true;
@@ -119,49 +121,39 @@ void DirectXPage::OnPointerReleased(Object^ sender, PointerRoutedEventArgs^ args
 void DirectXPage::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {
 	m_renderer->UpdateForWindowSizeChange();
-	m_renderNeeded = true;
 }
 
 void DirectXPage::OnLogicalDpiChanged(Object^ sender)
 {
 	m_renderer->SetDpi(DisplayProperties::LogicalDpi);
-	m_renderNeeded = true;
 }
 
 void DirectXPage::OnOrientationChanged(Object^ sender)
 {
 	m_renderer->UpdateForWindowSizeChange();
-	m_renderNeeded = true;
 }
 
 void DirectXPage::OnDisplayContentsInvalidated(Object^ sender)
 {
 	m_renderer->ValidateDevice();
-	m_renderNeeded = true;
 }
 
 void DirectXPage::OnRendering(Object^ sender, Object^ args)
 {
-	if (m_renderNeeded)
-	{
-		m_timer->Update();
-		m_renderer->Update(m_timer->Total, m_timer->Delta);
-		m_renderer->Render();
-		m_renderer->Present();
-		m_renderNeeded = false;
-	}
+	m_timer->Update();
+	m_renderer->Update(m_timer->Total, m_timer->Delta);
+	m_renderer->Render();
+	m_renderer->Present();
 }
 
 void DirectXPage::OnPreviousColorPressed(Object^ sender, RoutedEventArgs^ args)
 {
 	//m_renderer->BackgroundColorPrevious();
-	m_renderNeeded = true;
 }
 
 void DirectXPage::OnNextColorPressed(Object^ sender, RoutedEventArgs^ args)
 {
 	//m_renderer->BackgroundColorNext();
-	m_renderNeeded = true;
 }
 
 void DirectXPage::SaveInternalState(IPropertySet^ state)
@@ -181,35 +173,52 @@ void DirectXPage::OnChecked(Object^ sender, RoutedEventArgs^ e)
 	}
 }
 
+void DirectXPage::updatePauseButton()
+{
+	if(m_renderer->GetSetting(TestSettings::PAUSED)) 
+	{
+		pauseButton->Content=(L"Resume");
+	}
+	else
+	{
+		pauseButton->Content=(L"Pause");
+	}
+}
+
 void DirectXPage::OnPause(Object^ sender, RoutedEventArgs^ args)
 {
-	//m_renderer->BackgroundColorNext();
-	m_renderNeeded = true;
+	m_renderer->Pause();
+	updatePauseButton();
 }
 
 void DirectXPage::OnRestart(Object^ sender, RoutedEventArgs^ args)
 {
-	//m_renderer->BackgroundColorNext();
-	m_renderNeeded = true;
+	m_renderer->Restart();
+	updatePauseButton();
 }
 
 void DirectXPage::OnSingleStep(Object^ sender, RoutedEventArgs^ args)
 {
-	//m_renderer->BackgroundColorNext();
-	m_renderNeeded = true;
+	m_renderer->SingleStep();
+	updatePauseButton();
+
+}
+
+void DirectXPage::SetNumberBox(TextBox^ box, int value) {
+	box->Text = value.ToString();
+	box->Select(box->Text->Length(), 0);
 }
 
 int DirectXPage::ValidateNumber(TextBox^ box, int min, int max) {
 
-	int value = 0;
+	int value = min;
 	if(box->Text->Length() > 0) 
 	{
 		value = _wtoi(box->Text->Data());
-		int newValue = b2Clamp(value, 0, 10);
+		int newValue = b2Clamp(value, min, max);
 		if(newValue != value) 
 		{
-			box->Text = newValue.ToString();
-			box->Select(box->Text->Length(), 0);
+			SetNumberBox(box,newValue);
 			value = newValue;
 		}
 	}
@@ -222,22 +231,22 @@ void DirectXPage::OnTextChanged(Object^ sender, Windows::UI::Xaml::Controls::Tex
 
 	if(sender->Equals(velItersBox)) 
 	{
-		value = ValidateNumber(velItersBox, 0, 100);
+		value = ValidateNumber(velItersBox, VEL_ITERS_MIN, VEL_ITERS_MAX);
 	}
 	else if(sender->Equals(posItersBox)) 
 	{
-		value = ValidateNumber(posItersBox, 0, 100);
+		value = ValidateNumber(posItersBox, POS_ITERS_MIN, POS_ITERS_MAX);
 	}
 	else if(sender->Equals(hertzBox)) 
 	{
-		value = ValidateNumber(hertzBox, 0, 100);
+		value = ValidateNumber(hertzBox, HERTZ_MIN, HERTZ_MAX);
 	}
 }
 
 void DirectXPage::OnTestsComboBoxChanged(Object^ sender, SelectionChangedEventArgs^ e)
 {
 	if(sender->Equals(testsComboBox)) {
-		auto item = testsComboBox->SelectedIndex;
+		m_renderer->SetTest(testsComboBox->SelectedIndex);
 	}
 }
 
