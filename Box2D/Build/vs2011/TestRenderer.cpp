@@ -94,32 +94,77 @@ void TestRenderer::UpdateForWindowSizeChange()
 	m_height = ConvertDipsToPixels(m_windowBounds.Height);
 }
 
-void TestRenderer::SaveInternalState(IPropertySet^ state)
+bool TestRenderer::SaveStateKey(IPropertySet^ state, Platform::String^ key, int value)
 {
-#if 0
-	if (state->HasKey("m_backgroundColorIndex"))
+	if (state->HasKey(key))
 	{
-		state->Remove("m_backgroundColorIndex");
+		state->Remove(key);
+		state->Insert(key, PropertyValue::CreateInt32(value));
+		return true;
 	}
-	if (state->HasKey("m_textPosition"))
+	return false;
+}
+
+bool TestRenderer::LoadStateKey(IPropertySet^ state, Platform::String^ key, int& value) 
+{
+	if (state->HasKey(key))
 	{
-		state->Remove("m_textPosition");
+		value = safe_cast<IPropertyValue^>(state->Lookup(key))->GetInt32();
+		return true;
 	}
-	state->Insert("m_backgroundColorIndex", PropertyValue::CreateInt32(m_backgroundColorIndex));
-	state->Insert("m_textPosition", PropertyValue::CreatePoint(m_textPosition));
-#endif
+	return false;
 }
 
 void TestRenderer::LoadInternalState(IPropertySet^ state)
 {
-#if 0
-	if (state->HasKey("m_backgroundColorIndex") && state->HasKey("m_textPosition"))
-	{
-		m_backgroundColorIndex = safe_cast<IPropertyValue^>(state->Lookup("m_backgroundColorIndex"))->GetInt32();
-		m_textPosition = safe_cast<IPropertyValue^>(state->Lookup("m_textPosition"))->GetPoint();
-	}  
-#endif // 0
+	int value;
 
+	LoadStateKey(state,"VEL_ITERS", m_settings.velocityIterations);
+	LoadStateKey(state,"POS_ITERS",m_settings.positionIterations);
+	if(LoadStateKey(state,"HERTZ", value)) {
+		m_settings.hz = (float) value;
+	}
+	LoadStateKey(state,"SLEEP", m_settings.enableSleep);
+	LoadStateKey(state,"WARM_STARTING", m_settings.enableWarmStarting);
+	LoadStateKey(state,"TIME_OF_IMPACT", m_settings.enableContinuous);
+	LoadStateKey(state,"SUB_STEPPING", m_settings.enableSubStepping);
+	LoadStateKey(state,"SHAPES", m_settings.drawShapes);
+	LoadStateKey(state,"JOINTS", m_settings.drawJoints);
+	LoadStateKey(state,"AABB", m_settings.drawAABBs);
+	LoadStateKey(state,"CONTACT_POINTS", m_settings.drawContactPoints);
+	LoadStateKey(state,"CONTACT_NORMALS", m_settings.drawContactNormals);
+	LoadStateKey(state,"CONTACT_IMPULSES", m_settings.drawContactImpulse);
+	LoadStateKey(state,"FRICTION_IMPULSES", m_settings.drawFrictionImpulse);
+	LoadStateKey(state,"CENTER_OF_MASSES", m_settings.drawCOMs);
+	LoadStateKey(state,"STATISTICS", m_settings.drawStats);
+	LoadStateKey(state,"PROFILE", m_settings.drawProfile);
+	LoadStateKey(state,"PAUSED", m_settings.pause);
+	LoadStateKey(state,"SINGLE_STEP", m_settings.singleStep);
+	LoadStateKey(state,"CURRENT_TEST", m_currentTestIndex);
+}
+
+void TestRenderer::SaveInternalState(IPropertySet^ state)
+{
+	SaveStateKey(state,"VEL_ITERS", m_settings.velocityIterations);
+	SaveStateKey(state,"POS_ITERS",m_settings.positionIterations);
+	SaveStateKey(state,"HERTZ", (int)m_settings.hz);
+	SaveStateKey(state,"SLEEP", m_settings.enableSleep);
+	SaveStateKey(state,"WARM_STARTING", m_settings.enableWarmStarting);
+	SaveStateKey(state,"TIME_OF_IMPACT", m_settings.enableContinuous);
+	SaveStateKey(state,"SUB_STEPPING", m_settings.enableSubStepping);
+	SaveStateKey(state,"SHAPES", m_settings.drawShapes);
+	SaveStateKey(state,"JOINTS", m_settings.drawJoints);
+	SaveStateKey(state,"AABB", m_settings.drawAABBs);
+	SaveStateKey(state,"CONTACT_POINTS", m_settings.drawContactPoints);
+	SaveStateKey(state,"CONTACT_NORMALS", m_settings.drawContactNormals);
+	SaveStateKey(state,"CONTACT_IMPULSES", m_settings.drawContactImpulse);
+	SaveStateKey(state,"FRICTION_IMPULSES", m_settings.drawFrictionImpulse);
+	SaveStateKey(state,"CENTER_OF_MASSES", m_settings.drawCOMs);
+	SaveStateKey(state,"STATISTICS", m_settings.drawStats);
+	SaveStateKey(state,"PROFILE", m_settings.drawProfile);
+	SaveStateKey(state,"PAUSED", m_settings.pause);
+	SaveStateKey(state,"SINGLE_STEP", m_settings.singleStep);
+	SaveStateKey(state,"CURRENT_TEST", m_currentTestIndex);
 }
 
 void TestRenderer::Update(float timeTotal, float timeDelta)
@@ -423,7 +468,6 @@ void TestRenderer::SetSetting(TestSettings s, int value)
 void TestRenderer::ShiftMouseDown(Point position) {
 	b2Vec2 p = ConvertScreenToWorld((int32)position.X, (int32)position.Y);
 	m_currentTest->ShiftMouseDown(p);
-
 }
 
 void TestRenderer::MouseDown(Point position) {

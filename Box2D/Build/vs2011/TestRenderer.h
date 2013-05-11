@@ -103,6 +103,8 @@ internal:
 private:
 	TestRenderer();
 	void Resize();
+	bool SaveStateKey(Windows::Foundation::Collections::IPropertySet^ state, Platform::String^ key, int value);
+	bool LoadStateKey(Windows::Foundation::Collections::IPropertySet^ state, Platform::String^ key, int& value);
 
 	int m_numTests;
 	int m_currentTestIndex;

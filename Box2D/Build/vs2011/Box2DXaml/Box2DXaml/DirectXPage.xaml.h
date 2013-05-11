@@ -52,7 +52,6 @@ namespace Box2DXaml
 		TestRenderer^ m_renderer;
 
 		Windows::Foundation::Point m_lastPoint;
-		bool m_lastPointValid;
 		
 		BasicTimer^ m_timer;
 		bool m_mouseDown;

@@ -27,7 +27,6 @@ using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
 
 DirectXPage::DirectXPage() :
-	m_lastPointValid(false),
 	m_mouseDown(false)
 {
 	InitializeComponent();
@@ -93,29 +92,7 @@ void DirectXPage::UpdateSettings() {
 
 }
 
-#if 0
-void DirectXPage::OnPointerMoved(Object^ sender, PointerRoutedEventArgs^ args)
-{
-	auto currentPoint = args->GetCurrentPoint(nullptr);
-	if (currentPoint->IsInContact)
-	{
-		if (m_lastPointValid)
-		{
-			Windows::Foundation::Point delta(
-				currentPoint->Position.X - m_lastPoint.X,
-				currentPoint->Position.Y - m_lastPoint.Y
-				);
-			//m_renderer->UpdateTextPosition(delta);
-		}
-		m_lastPoint = currentPoint->Position;
-		m_lastPointValid = true;
-	}
-	else
-	{
-		m_lastPointValid = false;
-	}
-}  
-#endif // 0
+
 
 
 void DirectXPage::OnPointerPressed(Platform::Object^ sender, PointerRoutedEventArgs^ args)
@@ -145,17 +122,12 @@ void DirectXPage::OnPointerReleased(Platform::Object^ sender, PointerRoutedEvent
 
 void DirectXPage::OnPointerMoved(Platform::Object^ sender, PointerRoutedEventArgs^ args)
 {
-	auto currentPoint = args->GetCurrentPoint(nullptr);
-	m_renderer->MouseMove(currentPoint->Position);
+	if(m_mouseDown) 
+	{
+		auto currentPoint = args->GetCurrentPoint(nullptr);
+		m_renderer->MouseMove(currentPoint->Position);
+	}
 }
-
-#if 0
-void DirectXPage::OnPointerReleased(Object^ sender, PointerRoutedEventArgs^ args)
-{
-	m_lastPointValid = false;
-}  
-#endif // 0
-
 
 void DirectXPage::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {
@@ -199,7 +171,7 @@ void DirectXPage::OnNextTestPressed(Object^ sender, RoutedEventArgs^ args)
 
 void DirectXPage::SaveInternalState(IPropertySet^ state)
 {
-	//m_renderer->SaveInternalState(state);
+	m_renderer->SaveInternalState(state);
 }
 
 void DirectXPage::LoadInternalState(IPropertySet^ state)
