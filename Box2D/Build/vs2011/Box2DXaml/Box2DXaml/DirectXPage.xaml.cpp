@@ -46,6 +46,9 @@ DirectXPage::DirectXPage() :
 	Window::Current->CoreWindow->KeyDown += 
 		ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &DirectXPage::OnKeyDown);
 	
+	Window::Current->CoreWindow->PointerWheelChanged +=
+		ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &DirectXPage::OnPointerWheelChanged);
+
 	Window::Current->CoreWindow->KeyUp += 
 		ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &DirectXPage::OnKeyUp);
 
@@ -125,22 +128,22 @@ void DirectXPage::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 	{
 	// Press left to pan left.
 	case VirtualKey::Left:
-		m_renderer->UpdateViewCenter(-0.5f,0.0f);
+		m_renderer->UpdateViewCenter(0.5f,0.0f);
 		break;
 
 	// Press right to pan right.
 	case VirtualKey::Right:
-		m_renderer->UpdateViewCenter(0.5f,0.0f);
+		m_renderer->UpdateViewCenter(-0.5f,0.0f);
 		break;
 
 	// Press down to pan down.
 	case VirtualKey::Down:
-		m_renderer->UpdateViewCenter(0.0f,-0.5);
+		m_renderer->UpdateViewCenter(0.0f,0.5);
 		break;
 
 	// Press up to pan up.
 	case VirtualKey::Up:
-		m_renderer->UpdateViewCenter(0.0f,0.5);
+		m_renderer->UpdateViewCenter(0.0f,-0.5);
 		break;
 
 	// Press Home to reset the view.
@@ -187,6 +190,18 @@ void DirectXPage::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 	}
 }  
 
+void DirectXPage::OnPointerWheelChanged(CoreWindow^ sender, PointerEventArgs^ args)
+{
+	int direction = args->CurrentPoint->Properties->MouseWheelDelta;
+	if (direction > 0)
+	{
+		m_renderer->ZoomOut();
+	}
+	else
+	{
+		m_renderer->ZoomIn();
+	}
+}
 
 void DirectXPage::OnPointerPressed(Platform::Object^ sender, PointerRoutedEventArgs^ args)
 {
