@@ -89,6 +89,12 @@ public:
 	void MouseDown(Windows::Foundation::Point position);
 	void MouseMove(Windows::Foundation::Point position);
 	void MouseUp(Windows::Foundation::Point position);
+	
+	void KeyDown(Windows::System::VirtualKey key);
+	void UpdateViewCenter(float deltaX, float deltaY);
+	void ResetView();
+	void ZoomIn();
+	void ZoomOut();
 
 internal:
 	//getters for the DirectXTK helpers

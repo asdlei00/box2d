@@ -7,23 +7,24 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <SwapChainBackgroundPanel x:Name="SwapChainPanel" PointerMoved="OnPointerMoved" PointerPressed="OnPointerPressed" PointerReleased="OnPointerReleased">
-        <StackPanel HorizontalAlignment="Right" Margin="10,10,20,20">
+
+        <StackPanel HorizontalAlignment="Right" Margin="10,10,20,20" Grid.Column="1" Grid.Row="0" >
             <TextBlock Text="Tests" FontSize="20"/>
             <ComboBox x:Name="testsComboBox" Width="200" SelectionChanged="OnTestsComboBoxChanged"></ComboBox>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                 <TextBlock Text="Vel Iters" Margin="0,10,0,0" Width="100" FontSize="18"/>
-                <TextBox x:Name="velItersBox" Text="1" Width="100" MaxLength="3" InputScope="Number" TextChanged="OnTextChanged" />
+                <TextBox x:Name="velItersBox" Text="1" Width="100" MaxLength="3" InputScope="Number" KeyDown="OnTextChanged" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                 <TextBlock Text="Pos Iters" Width="100" FontSize="18"/>
-                <TextBox x:Name="posItersBox" Text="2" Width="100" MaxLength="3" InputScope="Number" TextChanged="OnTextChanged" />
+                <TextBox x:Name="posItersBox" Text="2" Width="100" MaxLength="3" InputScope="Number" KeyDown="OnTextChanged" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                 <TextBlock Text="Hertz" Width="100" FontSize="18"/>
-                <TextBox x:Name="hertzBox" Text="3" Width="100" MaxLength="3" InputScope="Number" TextChanged="OnTextChanged" />
+                <TextBox x:Name="hertzBox" Text="3" Width="100" MaxLength="3" InputScope="Number" KeyDown="OnTextChanged" />
             </StackPanel>
 
             <CheckBox x:Name="sleepCheckBox" Content="Sleep" Checked="OnChecked" Unchecked="OnChecked"/>
@@ -48,6 +49,7 @@
                 <Button x:Name="restartButton" Content="Restart" Width="150" Click="OnRestart" />
             </StackPanel>
         </StackPanel>
+
     </SwapChainBackgroundPanel>
     <Page.BottomAppBar>
         <AppBar Padding="10,0,10,0" Opacity="0.5">

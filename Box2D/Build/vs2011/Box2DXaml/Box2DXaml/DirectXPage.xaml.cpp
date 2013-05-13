@@ -27,6 +27,7 @@ using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
 
 DirectXPage::DirectXPage() :
+	m_keyHandled(false),
 	m_mouseDown(false)
 {
 	InitializeComponent();
@@ -41,6 +42,9 @@ DirectXPage::DirectXPage() :
 
 	Window::Current->CoreWindow->SizeChanged += 
 		ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &DirectXPage::OnWindowSizeChanged);
+
+	Window::Current->CoreWindow->KeyDown += 
+		ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &DirectXPage::OnKeyDown);
 
 	DisplayProperties::LogicalDpiChanged +=
 		ref new DisplayPropertiesEventHandler(this, &DirectXPage::OnLogicalDpiChanged);
@@ -94,6 +98,71 @@ void DirectXPage::UpdateSettings() {
 
 
 
+void DirectXPage::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
+{
+	VirtualKey key = args->VirtualKey;
+	//TODO: figure out how to get the keyboard modifiers using this framework
+
+	// check if keypress was already handled
+	if(m_keyHandled) {
+		m_keyHandled = false;
+		return;
+	}
+
+	switch (key)
+	{
+	// Press left to pan left.
+	case VirtualKey::Left:
+		m_renderer->UpdateViewCenter(-0.5f,0.0f);
+		break;
+
+	// Press right to pan right.
+	case VirtualKey::Right:
+		m_renderer->UpdateViewCenter(0.5f,0.0f);
+		break;
+
+	// Press down to pan down.
+	case VirtualKey::Down:
+		m_renderer->UpdateViewCenter(0.0f,-0.5);
+		break;
+
+	// Press up to pan up.
+	case VirtualKey::Up:
+		m_renderer->UpdateViewCenter(0.0f,0.5);
+		break;
+
+	// Press home to reset the view.
+	case VirtualKey::Home:
+		m_renderer->ResetView();
+		break;
+
+	// Press 'z' to zoom out.
+	case VirtualKey::Z:
+		m_renderer->ZoomIn();
+		break;
+
+	// Press 'x' to zoom in.
+	case VirtualKey::X:
+		m_renderer->ZoomOut();
+		break;
+
+	// Press 'r' to reset.
+	case VirtualKey::R:
+		m_renderer->Restart();
+		break;
+
+	// Press 'p' to pause.
+	case VirtualKey::P:
+		m_renderer->Pause();
+		updatePauseButton();
+		break;
+
+	default:
+		m_renderer->KeyDown(key);
+		break;
+	}
+}  
+
 
 void DirectXPage::OnPointerPressed(Platform::Object^ sender, PointerRoutedEventArgs^ args)
 {
@@ -101,12 +170,10 @@ void DirectXPage::OnPointerPressed(Platform::Object^ sender, PointerRoutedEventA
 	auto currentPoint = args->GetCurrentPoint(nullptr);
 
 	VirtualKeyModifiers mod = args->KeyModifiers;
-	if (mod == VirtualKeyModifiers::Shift)
-	{
+	if (mod == VirtualKeyModifiers::Shift) {
 		m_renderer->ShiftMouseDown(currentPoint->Position);
 	}
-	else
-	{
+	else {
 		m_renderer->MouseDown(currentPoint->Position);
 	}
 	m_mouseDown = true;
@@ -122,8 +189,7 @@ void DirectXPage::OnPointerReleased(Platform::Object^ sender, PointerRoutedEvent
 
 void DirectXPage::OnPointerMoved(Platform::Object^ sender, PointerRoutedEventArgs^ args)
 {
-	if(m_mouseDown) 
-	{
+	if(m_mouseDown) {
 		auto currentPoint = args->GetCurrentPoint(nullptr);
 		m_renderer->MouseMove(currentPoint->Position);
 	}
@@ -246,12 +312,14 @@ void DirectXPage::OnSingleStep(Object^ sender, RoutedEventArgs^ args)
 
 }
 
-void DirectXPage::SetNumberBox(TextBox^ box, int value) {
+void DirectXPage::SetNumberBox(TextBox^ box, int value) 
+{
 	box->Text = value.ToString();
 	box->Select(box->Text->Length(), 0);
 }
 
-int DirectXPage::ValidateNumber(TextBox^ box, int min, int max) {
+int DirectXPage::ValidateNumber(TextBox^ box, int min, int max) 
+{
 
 	int value = min;
 	if(box->Text->Length() > 0) 
@@ -267,22 +335,19 @@ int DirectXPage::ValidateNumber(TextBox^ box, int min, int max) {
 	return value;
 }
 
-void DirectXPage::OnTextChanged(Object^ sender, Windows::UI::Xaml::Controls::TextChangedEventArgs^ e)
+void DirectXPage::OnTextChanged(Object^ sender, KeyRoutedEventArgs^ e)
 {
 	int value = 0;
 
-	if(sender->Equals(velItersBox)) 
-	{
+	if(sender->Equals(velItersBox)) {
 		value = ValidateNumber(velItersBox, VEL_ITERS_MIN, VEL_ITERS_MAX);
-	}
-	else if(sender->Equals(posItersBox)) 
-	{
+	} else if(sender->Equals(posItersBox)) {
 		value = ValidateNumber(posItersBox, POS_ITERS_MIN, POS_ITERS_MAX);
-	}
-	else if(sender->Equals(hertzBox)) 
-	{
+	} else if(sender->Equals(hertzBox)) {
 		value = ValidateNumber(hertzBox, HERTZ_MIN, HERTZ_MAX);
 	}
+	e->Handled = true;
+	m_keyHandled = true;
 }
 
 void DirectXPage::OnTestsComboBoxChanged(Object^ sender, SelectionChangedEventArgs^ e)

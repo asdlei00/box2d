@@ -202,7 +202,6 @@
     <Image Include="Assets\SplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SimpleTextRenderer.h" />
     <ClInclude Include="BasicTimer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -286,7 +285,6 @@
     <ClCompile Include="..\..\RenderWinRT.cpp" />
     <ClCompile Include="..\..\TestbedWinRT.cpp" />
     <ClCompile Include="..\..\TestRenderer.cpp" />
-    <ClCompile Include="SimpleTextRenderer.cpp" />
     <ClCompile Include="App.xaml.cpp">
       <DependentUpon>App.xaml</DependentUpon>
     </ClCompile>

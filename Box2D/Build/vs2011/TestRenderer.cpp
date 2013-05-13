@@ -7,6 +7,7 @@ using namespace Microsoft::WRL;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::UI::Core;
+using namespace Windows::System;
 using namespace Box2DSettings;
 
 TestRenderer ^TestRenderer::m_instance = nullptr;
@@ -238,6 +239,49 @@ void TestRenderer::EndPrimitive()
 	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
 	m_batchDrawer->End();
 }
+
+void TestRenderer::KeyDown(Windows::System::VirtualKey key) {
+
+	switch (key)
+	{
+		// Press space to launch a bomb.
+	case VirtualKey::Space:
+		{
+			m_currentTest->LaunchBomb();
+		}
+		break;
+
+	default:
+		break;
+	}
+}
+
+
+void TestRenderer::UpdateViewCenter(float deltaX, float deltaY){
+	m_settings.viewCenter.x += deltaX;
+	m_settings.viewCenter.y += deltaY;
+	Resize();
+}
+
+void TestRenderer::ResetView(){
+	m_settings.viewCenter.Set(0.0f, 20.0f);
+	m_viewZoom = 1.0f;
+}
+
+void TestRenderer::ZoomIn(){
+	m_viewZoom = b2Min(1.1f * m_viewZoom, 20.0f);
+	Resize();
+}
+
+void TestRenderer::ZoomOut(){
+	m_viewZoom = b2Min(0.9f * m_viewZoom, 20.0f);
+	Resize();
+}
+
+
+
+
+
 
 void TestRenderer::Resize()
 {

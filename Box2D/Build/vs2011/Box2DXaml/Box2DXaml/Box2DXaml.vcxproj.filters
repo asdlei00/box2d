@@ -30,7 +30,6 @@
     <ApplicationDefinition Include="App.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SimpleTextRenderer.cpp" />
     <ClCompile Include="App.xaml.cpp" />
     <ClCompile Include="DirectXPage.xaml.cpp" />
     <ClCompile Include="pch.cpp" />
@@ -49,7 +48,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="App.xaml.h" />
     <ClInclude Include="DirectXPage.xaml.h" />
-    <ClInclude Include="SimpleTextRenderer.h" />
     <ClInclude Include="BasicTimer.h" />
     <ClInclude Include="..\..\DirectXBase.h" />
     <ClInclude Include="..\..\DirectXHelper.h" />

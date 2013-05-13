@@ -27,6 +27,7 @@ namespace Box2DXaml
 		void LoadInternalState(Windows::Foundation::Collections::IPropertySet^ state);
 
 	private:
+		void OnKeyDown(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::KeyEventArgs^ args);
 		void OnPointerMoved(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
 		void OnPointerPressed(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
 		void OnPointerReleased(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
@@ -41,7 +42,7 @@ namespace Box2DXaml
 		void updatePauseButton();
 		void OnSingleStep(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void OnRestart(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void OnTextChanged(Object^ sender, Windows::UI::Xaml::Controls::TextChangedEventArgs^ e); 
+		void OnTextChanged(Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e); 
 		void UpdateSettings();
 
 		int ValidateNumber(Windows::UI::Xaml::Controls::TextBox^ box, int min, int max);
@@ -55,5 +56,6 @@ namespace Box2DXaml
 		
 		BasicTimer^ m_timer;
 		bool m_mouseDown;
+		bool m_keyHandled;
 	};
 }
