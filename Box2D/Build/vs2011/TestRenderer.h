@@ -115,7 +115,7 @@ private:
 
 	int m_numTests;
 	int m_currentTestIndex;
-	Test* m_currentTest;
+	std::unique_ptr<Test> m_currentTest;
 	Settings m_settings;
 	float m_viewZoom;
 	static TestRenderer ^m_instance;

@@ -209,7 +209,7 @@ void TestRenderer::Render()
 	basicEffect->SetWorld(XMMatrixIdentity());
 
 	if(!m_currentTest) {
-		m_currentTest = g_testEntries[m_currentTestIndex].createFcn();
+		m_currentTest = std::unique_ptr<Test>(g_testEntries[m_currentTestIndex].createFcn());
 	}
 
 	Resize();
@@ -333,14 +333,8 @@ void TestRenderer::SingleStep()
 
 void TestRenderer::SetTest(int index) 
 {
-	if(m_currentTest) 
-	{
-		delete m_currentTest;
-		m_currentTest = nullptr;
-	}
-
 	m_currentTestIndex = b2Clamp(index, 0, m_numTests-1);
-	m_currentTest = g_testEntries[m_currentTestIndex].createFcn();
+	m_currentTest = std::unique_ptr<Test>(g_testEntries[m_currentTestIndex].createFcn());
 }
 
 void TestRenderer::PreviousTest() 
