@@ -8,7 +8,6 @@
 #include "SpriteFont.h"
 #include <d3d11.h>
 #include "TestRenderer.h"
-#include "TestbedWinRT.h"
 
 using namespace DirectX;
 
@@ -200,7 +199,6 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 		m_spriteFont->DrawString(m_spriteBatch, wbuffer, XMFLOAT2((float)x, (float)y), XMLoadFloat4(&XMFLOAT4(0.9f, 0.6f, 0.6f, 1.0f)));
 		m_spriteBatch->End();
 
-		TestbedWinRT::Resize(0, 0);
 		m_d3dContext->RSSetState(m_commonStates->CullClockwise());
 		m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), nullptr, 0xffffffff);
 		if(primitiveBeginning)

@@ -34,7 +34,6 @@
     <ClCompile Include="DirectXPage.xaml.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="..\..\DirectXBase.cpp" />
-    <ClCompile Include="..\..\RenderWinRT.cpp" />
     <ClCompile Include="..\..\..\..\Testbed\Tests\TestEntries.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
@@ -42,7 +41,7 @@
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\TestRenderer.cpp" />
-    <ClCompile Include="..\..\TestbedWinRT.cpp" />
+    <ClCompile Include="..\..\RenderWinRT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -51,7 +50,6 @@
     <ClInclude Include="BasicTimer.h" />
     <ClInclude Include="..\..\DirectXBase.h" />
     <ClInclude Include="..\..\DirectXHelper.h" />
-    <ClInclude Include="..\..\RenderWinRT.h" />
     <ClInclude Include="..\..\..\..\Testbed\Tests\AddPair.h">
       <Filter>Tests</Filter>
     </ClInclude>
