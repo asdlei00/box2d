@@ -45,6 +45,9 @@ DirectXPage::DirectXPage() :
 
 	Window::Current->CoreWindow->KeyDown += 
 		ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &DirectXPage::OnKeyDown);
+	
+	Window::Current->CoreWindow->KeyUp += 
+		ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &DirectXPage::OnKeyUp);
 
 	DisplayProperties::LogicalDpiChanged +=
 		ref new DisplayPropertiesEventHandler(this, &DirectXPage::OnLogicalDpiChanged);
@@ -96,8 +99,18 @@ void DirectXPage::UpdateSettings() {
 
 }
 
+void DirectXPage::OnKeyUp(CoreWindow^ sender, KeyEventArgs^ args)
+{
+	VirtualKey key = args->VirtualKey;
 
+	// check if keypress was already handled
+	if(m_keyHandled) {
+		m_keyHandled = false;
+		return;
+	}
 
+	m_renderer->KeyUp(key);
+}
 void DirectXPage::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 {
 	VirtualKey key = args->VirtualKey;
@@ -105,7 +118,6 @@ void DirectXPage::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 
 	// check if keypress was already handled
 	if(m_keyHandled) {
-		m_keyHandled = false;
 		return;
 	}
 
@@ -131,9 +143,21 @@ void DirectXPage::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 		m_renderer->UpdateViewCenter(0.0f,0.5);
 		break;
 
-	// Press home to reset the view.
+	// Press Home to reset the view.
 	case VirtualKey::Home:
 		m_renderer->ResetView();
+		break;
+
+	// Press PageDown to go to previous test
+	case VirtualKey::PageDown:
+		m_renderer->PreviousTest();
+		testsComboBox->SelectedIndex = m_renderer->GetCurrentTest();
+		break;
+
+	// Press PageUp to go to next test
+	case VirtualKey::PageUp:
+		m_renderer->NextTest();
+		testsComboBox->SelectedIndex = m_renderer->GetCurrentTest();
 		break;
 
 	// Press 'z' to zoom out.

@@ -6,7 +6,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <SwapChainBackgroundPanel x:Name="SwapChainPanel" PointerMoved="OnPointerMoved" PointerPressed="OnPointerPressed" PointerReleased="OnPointerReleased">
+    <SwapChainBackgroundPanel x:Name="SwapChainPanel" 
+                              PointerMoved="OnPointerMoved" 
+                              PointerPressed="OnPointerPressed" 
+                              PointerReleased="OnPointerReleased">
 
         <StackPanel HorizontalAlignment="Right" Margin="10,10,20,20" Grid.Column="1" Grid.Row="0" >
             <TextBlock Text="Tests" FontSize="20"/>

@@ -240,6 +240,14 @@ void TestRenderer::EndPrimitive()
 	m_batchDrawer->End();
 }
 
+void TestRenderer::KeyUp(Windows::System::VirtualKey key) {
+	unsigned char c = (unsigned char)key;
+	if(c >= 'A' && c <= 'Z') {
+		c += 'a' - 'A';		
+	}
+	m_currentTest->KeyboardUp(c);
+}
+
 void TestRenderer::KeyDown(Windows::System::VirtualKey key) {
 
 	switch (key)
@@ -252,6 +260,11 @@ void TestRenderer::KeyDown(Windows::System::VirtualKey key) {
 		break;
 
 	default:
+		unsigned char c = (unsigned char)key;
+		if(c >= 'A' && c <= 'Z') {
+			c += 'a' - 'A';		
+		}
+		m_currentTest->Keyboard(c);
 		break;
 	}
 }

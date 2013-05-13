@@ -91,6 +91,7 @@ public:
 	void MouseUp(Windows::Foundation::Point position);
 	
 	void KeyDown(Windows::System::VirtualKey key);
+	void KeyUp(Windows::System::VirtualKey key);
 	void UpdateViewCenter(float deltaX, float deltaY);
 	void ResetView();
 	void ZoomIn();
