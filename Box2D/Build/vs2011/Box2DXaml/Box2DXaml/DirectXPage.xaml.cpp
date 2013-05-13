@@ -309,7 +309,6 @@ void DirectXPage::OnSingleStep(Object^ sender, RoutedEventArgs^ args)
 {
 	m_renderer->SingleStep();
 	updatePauseButton();
-
 }
 
 void DirectXPage::SetNumberBox(TextBox^ box, int value) 
@@ -335,19 +334,30 @@ int DirectXPage::ValidateNumber(TextBox^ box, int min, int max)
 	return value;
 }
 
-void DirectXPage::OnTextChanged(Object^ sender, KeyRoutedEventArgs^ e)
+void DirectXPage::OnTextKeyDown(Object^ sender, KeyRoutedEventArgs^ e)
 {
 	int value = 0;
-
-	if(sender->Equals(velItersBox)) {
-		value = ValidateNumber(velItersBox, VEL_ITERS_MIN, VEL_ITERS_MAX);
-	} else if(sender->Equals(posItersBox)) {
-		value = ValidateNumber(posItersBox, POS_ITERS_MIN, POS_ITERS_MAX);
-	} else if(sender->Equals(hertzBox)) {
-		value = ValidateNumber(hertzBox, HERTZ_MIN, HERTZ_MAX);
-	}
-	e->Handled = true;
 	m_keyHandled = true;
+
+	if(e->Key < VirtualKey::Number0 || e->Key > VirtualKey::Number9) {
+		if(e->Key < VirtualKey::NumberPad0 || e->Key > VirtualKey::NumberPad9) {
+			if(e->Key != VirtualKey::Back && e->Key != VirtualKey::Tab) {
+				e->Handled = true;
+				return;
+			}
+		}
+	}	
+}
+
+void DirectXPage::OnTextLostFocus(Object^ sender, RoutedEventArgs ^ e)
+{
+	if(sender->Equals(velItersBox)) {
+		ValidateNumber(velItersBox, VEL_ITERS_MIN, VEL_ITERS_MAX);
+	} else if(sender->Equals(posItersBox)) {
+		ValidateNumber(posItersBox, POS_ITERS_MIN, POS_ITERS_MAX);
+	} else if(sender->Equals(hertzBox)) {
+		ValidateNumber(hertzBox, HERTZ_MIN, HERTZ_MAX);
+	}
 }
 
 void DirectXPage::OnTestsComboBoxChanged(Object^ sender, SelectionChangedEventArgs^ e)

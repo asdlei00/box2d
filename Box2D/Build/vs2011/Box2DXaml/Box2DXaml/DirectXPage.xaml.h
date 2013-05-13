@@ -42,7 +42,8 @@ namespace Box2DXaml
 		void updatePauseButton();
 		void OnSingleStep(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void OnRestart(Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void OnTextChanged(Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e); 
+		void OnTextKeyDown(Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e); 
+		void OnTextLostFocus(Object^ sender, Windows::UI::Xaml::RoutedEventArgs ^ e); 
 		void UpdateSettings();
 
 		int ValidateNumber(Windows::UI::Xaml::Controls::TextBox^ box, int min, int max);
