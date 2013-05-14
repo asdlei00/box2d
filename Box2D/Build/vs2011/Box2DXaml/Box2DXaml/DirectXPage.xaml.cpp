@@ -9,7 +9,6 @@
 #include "Testbed/Framework/Test.h"
 
 using namespace Box2DXaml;
-using namespace Box2DSettings;
 
 using namespace Platform;
 using namespace Windows::System;

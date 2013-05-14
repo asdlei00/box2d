@@ -8,7 +8,7 @@ using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::UI::Core;
 using namespace Windows::System;
-using namespace Box2DSettings;
+using namespace Box2DXaml;
 
 TestRenderer ^TestRenderer::m_instance = nullptr;
 
@@ -18,14 +18,15 @@ TestRenderer::TestRenderer()
 	m_enableText = true;
 	m_beginPrimitive = false;
 	m_numTests = 0;
-	while (g_testEntries[m_numTests].createFcn != NULL)
-	{
+	while (g_testEntries[m_numTests].createFcn != NULL) {
 		++m_numTests;
 	}
 
 	m_currentTest = nullptr;
-	m_currentTestIndex = 0;
 	m_viewZoom = 1.0f;
+
+	m_currentTestIndex = 0;
+	m_currentTest = std::unique_ptr<Test>(g_testEntries[m_currentTestIndex].createFcn());
 }
 
 void TestRenderer::CreateDeviceResources()
@@ -55,9 +56,8 @@ void TestRenderer::CreateDeviceResources()
 			DirectX::VertexPositionColor::InputElementCount,
 			vertexShaderByteCode,
 			vertexShaderSize,
-			&m_inputLayout
-			)
-		);
+			&m_inputLayout)
+	);
 }
 
 void TestRenderer::CreateWindowSizeDependentResources()
@@ -208,9 +208,6 @@ void TestRenderer::Render()
 	basicEffect->SetView(identity);
 	basicEffect->SetWorld(XMMatrixIdentity());
 
-	if(!m_currentTest) {
-		m_currentTest = std::unique_ptr<Test>(g_testEntries[m_currentTestIndex].createFcn());
-	}
 
 	Resize();
 	BeginPrimitive();

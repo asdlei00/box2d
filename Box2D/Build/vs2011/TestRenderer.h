@@ -16,7 +16,7 @@ struct ModelViewProjectionConstantBuffer
 	DirectX::XMFLOAT4X4 projection;
 };
 
-namespace Box2DSettings {
+namespace Box2DXaml {
 	const int VEL_ITERS_MIN = 1;
 	const int VEL_ITERS_MAX = 500;
 	const int POS_ITERS_MIN = 0;
@@ -46,6 +46,7 @@ namespace Box2DSettings {
 		NUM_SETTINGS
 	};
 }
+
 
 // This class renders a simple spinning cube.
 ref class TestRenderer sealed : public DirectXBase
@@ -78,8 +79,8 @@ public:
 	void EndPrimitive();
 	bool IsPrimitiveBeginning() { return m_beginPrimitive; }
 
-	int GetSetting(Box2DSettings::TestSettings s);
-	void SetSetting(Box2DSettings::TestSettings s, int value);
+	int GetSetting(Box2DXaml::TestSettings s);
+	void SetSetting(Box2DXaml::TestSettings s, int value);
 	void SetTest(int index);
 	void Restart();
 	void Pause();

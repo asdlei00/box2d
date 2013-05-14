@@ -91,10 +91,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <PackageCertificateKeyFile>Box2DXaml_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalDependencies>d2d1.lib;d3d11.lib;dxgi.lib;ole32.lib;windowscodecs.lib;..\..\DirectXTK\Bin\Windows8\$(Platform)\$(Configuration)\DirectXTK.lib;..\..\bin\$(Platform)\$(Configuration)\Box2D.lib;dwrite.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d2d1.lib;dxgi.lib;windowscodecs.lib;..\..\DirectXTK\Bin\Windows8\$(Platform)\$(Configuration)\DirectXTK.lib;..\..\bin\$(Platform)\$(Configuration)\Box2D.lib;dwrite.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <ClCompile>
