@@ -20,8 +20,12 @@
 #define TEST_H
 
 #include <Box2D/Box2D.h>
-//#include "Render.h"
-#include "RenderWinRT.h"
+
+#if WINAPI_FAMILY_PARTITION( WINAPI_PARTITION_APP )
+	#include "RenderWinRT.h"
+#else
+	#include "Render.h"
+#endif // WINAPI_FAMILY_PARTITION
 
 #include <cstdlib>
 
