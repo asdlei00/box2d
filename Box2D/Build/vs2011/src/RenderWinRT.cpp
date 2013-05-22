@@ -261,7 +261,7 @@ void DebugDraw::DrawString(const b2Vec2& p, const char *string, ...)
 		if(primitiveBeginning)
 		{
 			m_basicEffect->Apply(m_d3dContext);
-			m_renderer->Begin();
+			testRenderer->BeginPrimitive();
 		}
 	}
 	//glColor3f(0.5f, 0.9f, 0.5f);
