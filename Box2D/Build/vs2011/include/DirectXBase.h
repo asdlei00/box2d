@@ -22,8 +22,6 @@ public:
 	virtual void Present();
 	virtual float ConvertDipsToPixels(float dips);
 	void ValidateDevice();
-
-
 protected private:
 	Platform::Agile<Windows::UI::Core::CoreWindow> m_window;
 	Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ m_panel;
@@ -57,4 +55,7 @@ protected private:
 	// Transforms used for display orientation.
 	D2D1::Matrix3x2F m_orientationTransform2D;
 	DirectX::XMFLOAT4X4 m_orientationTransform3D;
+internal:
+	Microsoft::WRL::ComPtr<ID2D1DeviceContext> Get2DDeviceContext(){return m_d2dContext;}
+	Microsoft::WRL::ComPtr<IDWriteFactory1> GetWriteFactory(){return m_dwriteFactory;}
 };

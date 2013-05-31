@@ -95,13 +95,13 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalDependencies>d3d11.lib;d2d1.lib;dxgi.lib;windowscodecs.lib;DirectXTK.lib;Box2D.lib;dwrite.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d2d1.lib;dxgi.lib;windowscodecs.lib;Box2D.lib;dwrite.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
     </Link>
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>..\include;..\DirectXTK\Inc;..\..\..\;$(ProjectDir);$(IntermediateOutputPath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\..\..\;$(ProjectDir);$(IntermediateOutputPath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4453</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -191,7 +191,9 @@
     <ClInclude Include="..\include\DirectXHelper.h" />
     <ClInclude Include="..\include\RenderWinRT.h" />
     <ClInclude Include="..\include\TestbedWinRT.h" />
-    <ClInclude Include="..\include\TestRenderer.h" />
+    <ClInclude Include="..\include\TestRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="pch.h" />
     <ClInclude Include="App.xaml.h">
       <DependentUpon>App.xaml</DependentUpon>
@@ -243,7 +245,9 @@
     <ClCompile Include="..\src\Direct3DBase.cpp" />
     <ClCompile Include="..\src\DirectXBase.cpp" />
     <ClCompile Include="..\src\RenderWinRT.cpp" />
-    <ClCompile Include="..\src\TestRenderer.cpp" />
+    <ClCompile Include="..\src\TestRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="App.xaml.cpp">
       <DependentUpon>App.xaml</DependentUpon>
     </ClCompile>

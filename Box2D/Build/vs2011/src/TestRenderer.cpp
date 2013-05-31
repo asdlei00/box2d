@@ -33,14 +33,14 @@ void TestRenderer::CreateDeviceResources()
 {
 	DirectXBase::CreateDeviceResources();
 
-	m_commonStates.reset(new DirectX::CommonStates(m_d3dDevice.Get()));
-	m_basicEffect.reset(new DirectX::BasicEffect(m_d3dDevice.Get()));
+	/*m_commonStates.reset(new DirectX::CommonStates(m_d3dDevice.Get()));
+	m_basicEffect.reset(new DirectX::BasicEffect(m_d3dDevice.Get()));*/
 	size_t defaultBatchSize  = 1 << 16;
-	m_batchDrawer.reset(new DirectX::PrimitiveBatch<DirectX::VertexPositionColor>(m_d3dContext.Get(), defaultBatchSize * 3, defaultBatchSize));
+	/*m_batchDrawer.reset(new DirectX::PrimitiveBatch<DirectX::VertexPositionColor>(m_d3dContext.Get(), defaultBatchSize * 3, defaultBatchSize));
 	m_spriteBatch.reset(new DirectX::SpriteBatch(m_d3dContext.Get()));
-	m_spriteFont.reset(new DirectX::SpriteFont(m_d3dDevice.Get(), arial, sizeof(arial)));
+	m_spriteFont.reset(new DirectX::SpriteFont(m_d3dDevice.Get(), arial, sizeof(arial)));*/
 	
-	m_d3dContext->RSSetState(m_commonStates->CullClockwise());
+/*	m_d3dContext->RSSetState(m_commonStates->CullClockwise());
 	m_d3dContext->OMSetDepthStencilState(m_commonStates->DepthNone(), 0xffffffff);
 	m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), NULL, 0xffffffff);
 	m_basicEffect->SetLightingEnabled(false);
@@ -57,7 +57,7 @@ void TestRenderer::CreateDeviceResources()
 			vertexShaderByteCode,
 			vertexShaderSize,
 			&m_inputLayout)
-	);
+	);*/
 }
 
 void TestRenderer::CreateWindowSizeDependentResources()
@@ -73,24 +73,15 @@ void TestRenderer::CreateWindowSizeDependentResources()
 	// made to the swap chain render target. For draw calls to other targets,
 	// this transform should not be applied.
 	// that whole preceding paragraph is a lie!
-	XMStoreFloat4x4(
-		&m_constantBufferData.projection,
-		XMMatrixOrthographicRH(
-			m_windowBounds.Width,
-			m_windowBounds.Height,
-			-1,
-			1
-			)
-		);
-	m_basicEffect->SetProjection(XMLoadFloat4x4(&m_constantBufferData.projection));
+	XMStoreFloat4x4(&m_constantBufferData.projection,XMMatrixOrthographicRH(m_windowBounds.Width,m_windowBounds.Height,-1,1));
+	//m_basicEffect->SetProjection(XMLoadFloat4x4(&m_constantBufferData.projection));
 }
 
 void TestRenderer::UpdateForWindowSizeChange()
 {
 	DirectXBase::UpdateForWindowSizeChange();
 
-	m_basicEffect->SetProjection(XMMatrixOrthographicRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1));
-
+	//m_basicEffect->SetProjection(XMMatrixOrthographicRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1));
 	m_width = ConvertDipsToPixels(m_windowBounds.Width);
 	m_height = ConvertDipsToPixels(m_windowBounds.Height);
 }
@@ -122,7 +113,8 @@ void TestRenderer::LoadInternalState(IPropertySet^ state)
 
 	LoadStateKey(state,"VEL_ITERS", m_settings.velocityIterations);
 	LoadStateKey(state,"POS_ITERS",m_settings.positionIterations);
-	if(LoadStateKey(state,"HERTZ", value)) {
+	if(LoadStateKey(state,"HERTZ", value)) 
+	{
 		m_settings.hz = (float) value;
 	}
 	LoadStateKey(state,"SLEEP", m_settings.enableSleep);
@@ -171,70 +163,43 @@ void TestRenderer::SaveInternalState(IPropertySet^ state)
 void TestRenderer::Update(float timeTotal, float timeDelta)
 {
 	(void) timeDelta; // Unused parameter.
-
 	XMVECTOR eye = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR at = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
 	XMStoreFloat4x4(&m_constantBufferData.view, (XMMatrixLookAtRH(eye, at, up)));
-	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixIdentity());//(XMMatrixRotationY(timeTotal * XM_PIDIV4)));
+	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixIdentity());
 }
 
 void TestRenderer::Render()
 {
-	const float midnightBlue[] = { 0.098f, 0.098f, 0.439f, 1.000f };
-	m_d3dContext->ClearRenderTargetView(
-		m_d3dRenderTargetView.Get(),
-		midnightBlue
-		);
-
-	m_d3dContext->ClearDepthStencilView(
-		m_d3dDepthStencilView.Get(),
-		D3D11_CLEAR_DEPTH,
-		1.0f,
-		0
-		);
-
-	m_d3dContext->OMSetRenderTargets(
-		1,
-		m_d3dRenderTargetView.GetAddressOf(),
-		m_d3dDepthStencilView.Get()
-		);
-		
-	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
-
-	BasicEffect *basicEffect = GetBasicEffect();
-	XMMATRIX identity = XMMatrixIdentity();
-	basicEffect->SetView(identity);
-	basicEffect->SetWorld(XMMatrixIdentity());
-
-
+	D2D1_COLOR_F midnightBlue=D2D1::ColorF(0.098f, 0.098f, 0.439f,1.000f);
 	Resize();
 	BeginPrimitive();
+	m_d2dContext->Clear(&midnightBlue);
 	m_currentTest->Step(&m_settings);
-	EndPrimitive();
 	m_currentTest->DrawTitle(g_testEntries[m_currentTestIndex].name);
+	EndPrimitive();
 }
 
 TestRenderer ^TestRenderer::GetInstance()
 {
 	if(m_instance == nullptr)
+	{
 		m_instance = ref new TestRenderer();
+	}
 	return m_instance;
 }
 
 void TestRenderer::BeginPrimitive()
 {
 	m_beginPrimitive = true;
-	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
-	m_batchDrawer->Begin();
+	m_d2dContext->BeginDraw();
 }
 
 void TestRenderer::EndPrimitive()
 {
 	m_beginPrimitive = false;
-	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
-	m_batchDrawer->End();
+	m_d2dContext->EndDraw();
 }
 
 void TestRenderer::KeyUp(Windows::System::VirtualKey key) {
@@ -289,25 +254,14 @@ void TestRenderer::ZoomOut(){
 }
 
 
-
-
-
-
 void TestRenderer::Resize()
 {
-
 	float32 ratio = float32(m_windowBounds.Width) / float32(m_windowBounds.Height);
-
 	b2Vec2 extents(ratio * 25.0f, 25.0f);
 	extents *= m_viewZoom;
-
 	b2Vec2 lower = m_settings.viewCenter - extents;
 	b2Vec2 upper = m_settings.viewCenter + extents;
-
-	// L/R/B/T
-	BasicEffect *effect = TestRenderer::GetInstance()->GetBasicEffect();
-	effect->SetProjection(XMMatrixOrthographicOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1));
-	effect->Apply(TestRenderer::GetInstance()->GetDeviceContext());
+	projectionMatrix = XMMatrixOrthographicOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1);
 }
 
 void TestRenderer::Restart() 

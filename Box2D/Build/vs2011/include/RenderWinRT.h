@@ -7,10 +7,10 @@ struct b2AABB;
 namespace DirectX {
 struct VertexPositionColor;
 template <typename T> class PrimitiveBatch;
-class CommonStates;
+/*class CommonStates;
 class BasicEffect;
 class SpriteBatch;
-class SpriteFont;
+class SpriteFont;*/
 }
 
 class DebugDraw : public b2Draw
@@ -39,10 +39,10 @@ public:
     void DrawAABB(b2AABB* aabb, const b2Color& color);
 
 private:
-	DirectX::CommonStates *m_commonStates;
+	/*DirectX::CommonStates *m_commonStates;
 	DirectX::BasicEffect *m_basicEffect;
 	DirectX::PrimitiveBatch<DirectX::VertexPositionColor> *m_renderer;
 	DirectX::SpriteBatch *m_spriteBatch;
-	DirectX::SpriteFont *m_spriteFont;
+	DirectX::SpriteFont *m_spriteFont;*/
 	ID3D11DeviceContext *m_d3dContext;
 };
