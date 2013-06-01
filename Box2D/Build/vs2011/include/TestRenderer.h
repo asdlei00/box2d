@@ -58,7 +58,6 @@ public:
 	virtual void CreateWindowSizeDependentResources() override;
 	virtual void UpdateForWindowSizeChange() override;
 	virtual void Render() override;
-
 	// Method for updating time-dependent objects.
 	void Update(float timeTotal, float timeDelta);
 
@@ -100,6 +99,11 @@ public:
 
 internal:
 	DirectX::XMMATRIX* GetProjectionMatrix(){return &projectionMatrix;}
+	void DrawTriangle(D2D1_POINT_2F& point0,D2D1_POINT_2F& point1,D2D1_POINT_2F& point2,D2D1_COLOR_F& color);
+	void DrawLineList(D2D1_POINT_2F* points,const UINT numPoints,D2D1_COLOR_F& color);
+	void DrawLine(D2D1_POINT_2F& point0,D2D1_POINT_2F& point1,D2D1_COLOR_F& color);
+	void DrawQuad(D2D1_POINT_2F& point0,D2D1_POINT_2F& point1,D2D1_POINT_2F& point2,D2D1_POINT_2F& point3,D2D1_COLOR_F& color);
+	D2D1_POINT_2F TransformPoint(D2D1_POINT_2F& point,DirectX::XMMATRIX& matrix);
 private:
 	TestRenderer();
 	void Resize();

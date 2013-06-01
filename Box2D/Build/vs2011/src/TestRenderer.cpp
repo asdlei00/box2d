@@ -32,32 +32,6 @@ TestRenderer::TestRenderer()
 void TestRenderer::CreateDeviceResources()
 {
 	DirectXBase::CreateDeviceResources();
-
-	/*m_commonStates.reset(new DirectX::CommonStates(m_d3dDevice.Get()));
-	m_basicEffect.reset(new DirectX::BasicEffect(m_d3dDevice.Get()));*/
-	size_t defaultBatchSize  = 1 << 16;
-	/*m_batchDrawer.reset(new DirectX::PrimitiveBatch<DirectX::VertexPositionColor>(m_d3dContext.Get(), defaultBatchSize * 3, defaultBatchSize));
-	m_spriteBatch.reset(new DirectX::SpriteBatch(m_d3dContext.Get()));
-	m_spriteFont.reset(new DirectX::SpriteFont(m_d3dDevice.Get(), arial, sizeof(arial)));*/
-	
-/*	m_d3dContext->RSSetState(m_commonStates->CullClockwise());
-	m_d3dContext->OMSetDepthStencilState(m_commonStates->DepthNone(), 0xffffffff);
-	m_d3dContext->OMSetBlendState(m_commonStates->AlphaBlend(), NULL, 0xffffffff);
-	m_basicEffect->SetLightingEnabled(false);
-	m_basicEffect->SetFogEnabled(false);
-	m_basicEffect->SetTextureEnabled(false);
-	m_basicEffect->SetVertexColorEnabled(true);
-	const void *vertexShaderByteCode;
-	size_t vertexShaderSize;
-	m_basicEffect->GetVertexShaderBytecode(&vertexShaderByteCode, &vertexShaderSize);
-	DX::ThrowIfFailed(
-		m_d3dDevice->CreateInputLayout(
-			DirectX::VertexPositionColor::InputElements,
-			DirectX::VertexPositionColor::InputElementCount,
-			vertexShaderByteCode,
-			vertexShaderSize,
-			&m_inputLayout)
-	);*/
 }
 
 void TestRenderer::CreateWindowSizeDependentResources()
@@ -80,8 +54,7 @@ void TestRenderer::CreateWindowSizeDependentResources()
 void TestRenderer::UpdateForWindowSizeChange()
 {
 	DirectXBase::UpdateForWindowSizeChange();
-
-	//m_basicEffect->SetProjection(XMMatrixOrthographicRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1));
+	projectionMatrix=XMMatrixOrthographicRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1);
 	m_width = ConvertDipsToPixels(m_windowBounds.Width);
 	m_height = ConvertDipsToPixels(m_windowBounds.Height);
 }
@@ -181,6 +154,92 @@ void TestRenderer::Render()
 	EndPrimitive();
 }
 
+D2D1_POINT_2F TestRenderer::TransformPoint(D2D1_POINT_2F& point,DirectX::XMMATRIX& matrix)
+{
+	D2D1_POINT_2F pr={};
+	D2D1_SIZE_F size = m_d2dContext->GetSize();
+	float x = point.x*matrix.r[0].m128_f32[0]+point.y*matrix.r[0].m128_f32[1]+matrix.r[0].m128_f32[2]+matrix.r[0].m128_f32[3];
+	float y = point.x*matrix.r[1].m128_f32[0]+point.y*matrix.r[1].m128_f32[1]+matrix.r[1].m128_f32[2]+matrix.r[1].m128_f32[3];
+	float z = point.x*matrix.r[2].m128_f32[0]+point.y*matrix.r[2].m128_f32[1]+matrix.r[2].m128_f32[2]+matrix.r[2].m128_f32[3];
+	pr.x=((1.0f+x)*size.width)*0.5f;
+	pr.y=size.height-(((1.0f+y)*size.height)*0.5f);
+	return pr;
+}
+
+//Emulate Triangle.
+void TestRenderer::DrawTriangle(D2D1_POINT_2F& point0,D2D1_POINT_2F& point1,D2D1_POINT_2F& point2,D2D1_COLOR_F& color)
+{
+	ID2D1PathGeometry* pathGeometry=NULL;
+	ID2D1GeometrySink* geometrySink=NULL;
+	ID2D1SolidColorBrush* colorBrush=NULL;
+	m_d2dContext->CreateSolidColorBrush(color,&colorBrush);
+	m_d2dFactory->CreatePathGeometry(&pathGeometry);
+	pathGeometry->Open(&geometrySink);
+	geometrySink->SetFillMode(D2D1_FILL_MODE_WINDING);
+	geometrySink->BeginFigure(TransformPoint(point0,projectionMatrix),D2D1_FIGURE_BEGIN_FILLED);
+	geometrySink->AddLine(TransformPoint(point1,projectionMatrix));
+	geometrySink->AddLine(TransformPoint(point2,projectionMatrix));
+	geometrySink->EndFigure(D2D1_FIGURE_END_CLOSED);
+	geometrySink->Close();
+	m_d2dContext->FillGeometry(pathGeometry,colorBrush);
+	m_d2dContext->DrawGeometry(pathGeometry,colorBrush);
+	colorBrush->Release();
+	geometrySink->Release();
+	pathGeometry->Release();
+}
+//Draw an quad.
+void TestRenderer::DrawQuad(D2D1_POINT_2F& point0,D2D1_POINT_2F& point1,D2D1_POINT_2F& point2,D2D1_POINT_2F& point3,D2D1_COLOR_F& color)
+{
+	ID2D1PathGeometry* pathGeometry=NULL;
+	ID2D1GeometrySink* geometrySink=NULL;
+	ID2D1SolidColorBrush* colorBrush=NULL;
+	m_d2dContext->CreateSolidColorBrush(color,&colorBrush);
+	m_d2dFactory->CreatePathGeometry(&pathGeometry);
+	pathGeometry->Open(&geometrySink);
+	geometrySink->SetFillMode(D2D1_FILL_MODE_WINDING);
+	geometrySink->BeginFigure(TransformPoint(point0,projectionMatrix),D2D1_FIGURE_BEGIN_FILLED);
+	geometrySink->AddLine(TransformPoint(point1,projectionMatrix));
+	geometrySink->AddLine(TransformPoint(point2,projectionMatrix));
+	geometrySink->AddLine(TransformPoint(point3,projectionMatrix));
+	geometrySink->EndFigure(D2D1_FIGURE_END_CLOSED);
+	geometrySink->Close();
+	m_d2dContext->FillGeometry(pathGeometry,colorBrush);
+	m_d2dContext->DrawGeometry(pathGeometry,colorBrush);
+	colorBrush->Release();
+	geometrySink->Release();
+	pathGeometry->Release();
+}
+//Draw an single line.
+void TestRenderer::DrawLine(D2D1_POINT_2F& point0,D2D1_POINT_2F& point1,D2D1_COLOR_F& color)
+{
+	ID2D1SolidColorBrush* colorBrush=NULL;
+	m_d2dContext->CreateSolidColorBrush(color,&colorBrush);
+	m_d2dContext->DrawLine(TransformPoint(point0,projectionMatrix),TransformPoint(point1,projectionMatrix),colorBrush);
+	colorBrush->Release();
+}
+//Emulate Line List.
+void TestRenderer::DrawLineList(D2D1_POINT_2F* points,const UINT numPoints,D2D1_COLOR_F& color)
+{
+	ID2D1PathGeometry* pathGeometry=NULL;
+	ID2D1GeometrySink* geometrySink=NULL;
+	ID2D1SolidColorBrush* colorBrush=NULL;
+	m_d2dContext->CreateSolidColorBrush(color,&colorBrush);
+	m_d2dFactory->CreatePathGeometry(&pathGeometry);
+	pathGeometry->Open(&geometrySink);
+	geometrySink->SetFillMode(D2D1_FILL_MODE_WINDING);
+	geometrySink->BeginFigure(TransformPoint(points[0],projectionMatrix),D2D1_FIGURE_BEGIN_FILLED);
+	D2D1_POINT_2F* currentVertex=points+1;
+	for(UINT i=1;i<numPoints;++i)
+	{
+		geometrySink->AddLine(TransformPoint(points[i],projectionMatrix));
+	}
+	geometrySink->EndFigure(D2D1_FIGURE_END_CLOSED);
+	geometrySink->Close();
+	m_d2dContext->DrawGeometry(pathGeometry,colorBrush);
+	colorBrush->Release();
+	geometrySink->Release();
+	pathGeometry->Release();
+}
 TestRenderer ^TestRenderer::GetInstance()
 {
 	if(m_instance == nullptr)
