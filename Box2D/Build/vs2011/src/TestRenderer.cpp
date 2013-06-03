@@ -47,14 +47,33 @@ void TestRenderer::CreateWindowSizeDependentResources()
 	// made to the swap chain render target. For draw calls to other targets,
 	// this transform should not be applied.
 	// that whole preceding paragraph is a lie!
-	XMStoreFloat4x4(&m_constantBufferData.projection,XMMatrixOrthographicRH(m_windowBounds.Width,m_windowBounds.Height,-1,1));
+	//XMStoreFloat4x4(&m_constantBufferData.projection,XMMatrixOrthographicRH(m_windowBounds.Width,m_windowBounds.Height,-1,1));
 	//m_basicEffect->SetProjection(XMLoadFloat4x4(&m_constantBufferData.projection));
 }
-
+void TestRenderer::ComputeOrthoMatrixRH(int width,int height,float znear,float zfar)
+{
+	memset(projectionMatrix,0,sizeof(projectionMatrix));
+	projectionMatrix[0]=2.0f/(float)(width);			//Clip space goes from -1 to 1 on the x axis.
+	projectionMatrix[5]=2.0f/(float)(height);			//Clip space goes from -1 to 1 on the y axis.
+	projectionMatrix[10]=1.0f/(znear-zfar);				//Clip space goes from 0 to 1 on the z axis.
+	projectionMatrix[14]=znear/(znear/zfar);
+	projectionMatrix[15]=1.0f;
+}
+void TestRenderer::ComputeOrthoMatrixOrthoOffCenterRH(int l,int r,int b,int t,float znear,float zfar)
+{
+	memset(projectionMatrix,0,sizeof(projectionMatrix));
+	projectionMatrix[0]=2.0f/(float)(r-l);			//Clip space goes from -1 to 1 on the x axis.
+	projectionMatrix[5]=2.0f/(float)(t-b);			//Clip space goes from -1 to 1 on the y axis.
+	projectionMatrix[10]=1.0f/(znear-zfar);			//Clip space goes from 0 to 1 on the z axis.
+	projectionMatrix[12]=(float)(l+r)/(float)(l-r);
+	projectionMatrix[13]=(float)(t+b)/(float)(b-t);
+	projectionMatrix[14]=znear/(znear/zfar);
+	projectionMatrix[15]=1.0f;
+}
 void TestRenderer::UpdateForWindowSizeChange()
 {
 	DirectXBase::UpdateForWindowSizeChange();
-	projectionMatrix=XMMatrixOrthographicRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1);
+	ComputeOrthoMatrixRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1);
 	m_width = ConvertDipsToPixels(m_windowBounds.Width);
 	m_height = ConvertDipsToPixels(m_windowBounds.Height);
 }
@@ -154,13 +173,18 @@ void TestRenderer::Render()
 	EndPrimitive();
 }
 
-D2D1_POINT_2F TestRenderer::TransformPoint(D2D1_POINT_2F& point,DirectX::XMMATRIX& matrix)
+D2D1_POINT_2F TestRenderer::TransformPoint(D2D1_POINT_2F& point,float* matrix)
 {
 	D2D1_POINT_2F pr={};
 	D2D1_SIZE_F size = m_d2dContext->GetSize();
-	float x = point.x*matrix.r[0].m128_f32[0]+point.y*matrix.r[0].m128_f32[1]+matrix.r[0].m128_f32[2]+matrix.r[0].m128_f32[3];
-	float y = point.x*matrix.r[1].m128_f32[0]+point.y*matrix.r[1].m128_f32[1]+matrix.r[1].m128_f32[2]+matrix.r[1].m128_f32[3];
-	float z = point.x*matrix.r[2].m128_f32[0]+point.y*matrix.r[2].m128_f32[1]+matrix.r[2].m128_f32[2]+matrix.r[2].m128_f32[3];
+	float x = point.x*matrix[0]+point.y*matrix[4]+matrix[8]+matrix[12];
+	float y = point.x*matrix[1]+point.y*matrix[5]+matrix[9]+matrix[13];
+	float w = point.x*matrix[3]+point.y*matrix[7]+matrix[11]+matrix[15];
+	if(w!=0.0f)
+	{
+		x/=w;
+		y/=w;
+	}
 	pr.x=((1.0f+x)*size.width)*0.5f;
 	pr.y=size.height-(((1.0f+y)*size.height)*0.5f);
 	return pr;
@@ -320,7 +344,7 @@ void TestRenderer::Resize()
 	extents *= m_viewZoom;
 	b2Vec2 lower = m_settings.viewCenter - extents;
 	b2Vec2 upper = m_settings.viewCenter + extents;
-	projectionMatrix = XMMatrixOrthographicOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1);
+	ComputeOrthoMatrixOrthoOffCenterRH(lower.x, upper.x, lower.y, upper.y, -1, 1);
 }
 
 void TestRenderer::Restart() 

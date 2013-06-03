@@ -5,26 +5,7 @@
 #include "TestRenderer.h"
 
 
-//Helper matrix function to perform our own projection matrix.
-D2D1_POINT_2F TransformPoint(DirectX::XMMATRIX* matrix,D2D1_POINT_2F* point,float width,float height)
-{
-	D2D1_POINT_2F pr={};
-	
-	float x = point->x*matrix->r[0].m128_f32[0]+
-		      point->y*matrix->r[0].m128_f32[1]+
-			  matrix->r[0].m128_f32[2]+
-			  matrix->r[0].m128_f32[3];
 
-	float y = point->x*matrix->r[1].m128_f32[0]+
-		      point->y*matrix->r[1].m128_f32[1]+
-			  matrix->r[1].m128_f32[2]+
-			  matrix->r[1].m128_f32[3];
-
-	//Coordinate should be in range of -1 to 1.
-	pr.x=(x*0.5f+0.5f)*width;
-	pr.y=height-((y*0.5f+0.5f)*height);
-	return pr;
-}
 DebugDraw::DebugDraw()
 {
 
@@ -144,7 +125,6 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 	ID2D1SolidColorBrush* solidBrushColor=NULL;
 	D2D_COLOR_F solidColor = D2D1::ColorF(1,1,1,1);
 	deviceContext->CreateSolidColorBrush(solidColor,&solidBrushColor);
-	DirectX::XMMATRIX* projection = testRenderer->GetProjectionMatrix();
 	IDWriteTextFormat* textFormatBody=NULL;
 	
 	//Not a good idea to create it every frame, but this is just to showcased that it works.
