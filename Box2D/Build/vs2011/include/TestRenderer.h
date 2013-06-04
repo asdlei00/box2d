@@ -78,8 +78,6 @@ public:
 	void SetTextEnable(bool enable) { m_enableText = enable; }
 	void BeginPrimitive();
 	void EndPrimitive();
-	bool IsPrimitiveBeginning() { return m_beginPrimitive; }
-
 	int GetSetting(Box2DXaml::TestSettings s);
 	void SetSetting(Box2DXaml::TestSettings s, int value);
 	void SetTest(int index);
@@ -122,8 +120,5 @@ private:
 	b2Vec2 ConvertScreenToWorld(int32 x, int32 y);
 	ModelViewProjectionConstantBuffer m_constantBufferData;
 	bool m_enableText;
-	bool m_beginPrimitive;
-	float m_width;
-	float m_height;
 	float projectionMatrix[16];
 };

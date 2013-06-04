@@ -17,7 +17,6 @@ TestRenderer::TestRenderer()
 	textFormatBody=NULL;
 	m_instance = this;
 	m_enableText = true;
-	m_beginPrimitive = false;
 	m_numTests = 0;
 	while (g_testEntries[m_numTests].createFcn != NULL) {
 		++m_numTests;
@@ -38,18 +37,6 @@ void TestRenderer::CreateDeviceResources()
 void TestRenderer::CreateWindowSizeDependentResources()
 {
 	DirectXBase::CreateWindowSizeDependentResources();
-
-	//float aspectRatio = m_windowBounds.Width / m_windowBounds.Height;
-	//float fovAngleY = 70.0f * XM_PI / 180.0f;
-
-	// Note that the m_orientationTransform3D matrix is post-multiplied here
-	// in order to correctly orient the scene to match the display orientation.
-	// This post-multiplication step is required for any draw calls that are
-	// made to the swap chain render target. For draw calls to other targets,
-	// this transform should not be applied.
-	// that whole preceding paragraph is a lie!
-	//XMStoreFloat4x4(&m_constantBufferData.projection,XMMatrixOrthographicRH(m_windowBounds.Width,m_windowBounds.Height,-1,1));
-	//m_basicEffect->SetProjection(XMLoadFloat4x4(&m_constantBufferData.projection));
 }
 void TestRenderer::ComputeOrthoMatrixRH(float width,float height,float znear,float zfar)
 {
@@ -75,8 +62,6 @@ void TestRenderer::UpdateForWindowSizeChange()
 {
 	DirectXBase::UpdateForWindowSizeChange();
 	ComputeOrthoMatrixRH(m_windowBounds.Width, m_windowBounds.Height, -1, 1);
-	m_width = ConvertDipsToPixels(m_windowBounds.Width);
-	m_height = ConvertDipsToPixels(m_windowBounds.Height);
 }
 
 bool TestRenderer::SaveStateKey(IPropertySet^ state, Platform::String^ key, int value)
@@ -305,13 +290,11 @@ TestRenderer ^TestRenderer::GetInstance()
 
 void TestRenderer::BeginPrimitive()
 {
-	m_beginPrimitive = true;
 	m_d2dContext->BeginDraw();
 }
 
 void TestRenderer::EndPrimitive()
 {
-	m_beginPrimitive = false;
 	m_d2dContext->EndDraw();
 }
 
@@ -602,6 +585,10 @@ void TestRenderer::MouseUp(Point position) {
 
 b2Vec2 TestRenderer::ConvertScreenToWorld(int32 x, int32 y)
 {
+	D2D1_SIZE_F size = m_d2dContext->GetSize();
+	float m_width=size.width;
+	float m_height=size.height;
+
 	float32 u = x / float32(m_width);
 	float32 v = (m_height - y) / float32(m_height);
 

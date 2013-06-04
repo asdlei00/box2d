@@ -129,7 +129,7 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 		wchar_t wbuffer[128];
 		size_t printed;
 		mbstowcs_s(&printed, wbuffer, buffer, sizeof(wbuffer));
-		testRenderer->PrintString(wbuffer,x,y,D2D1::ColorF(1,1,1,1));
+		testRenderer->PrintString(wbuffer,x,y,D2D1::ColorF(0.9f, 0.6f, 0.6f, 1.0f));
 	}
 }
 
