@@ -119,27 +119,6 @@ void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color)
 void DebugDraw::DrawString(int x, int y, const char *string, ...)
 {
 	TestRenderer^ testRenderer = TestRenderer::GetInstance();
-	Microsoft::WRL::ComPtr<ID2D1DeviceContext> deviceContext = testRenderer->Get2DDeviceContext();
-	Microsoft::WRL::ComPtr<IDWriteFactory1> writeFactory=testRenderer->GetWriteFactory();
-	D2D_SIZE_F fsize = deviceContext->GetSize();
-	ID2D1SolidColorBrush* solidBrushColor=NULL;
-	D2D_COLOR_F solidColor = D2D1::ColorF(1,1,1,1);
-	deviceContext->CreateSolidColorBrush(solidColor,&solidBrushColor);
-	IDWriteTextFormat* textFormatBody=NULL;
-	
-	//Not a good idea to create it every frame, but this is just to showcased that it works.
-	writeFactory->CreateTextFormat(
-            L"Segoe UI",
-            nullptr,
-            DWRITE_FONT_WEIGHT_LIGHT,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_FONT_STRETCH_NORMAL,
-            24,
-            L"en-us",
-            &textFormatBody
-            );
-
-
 	if(testRenderer->GetTextEnable())
 	{			
 		char buffer[128];
@@ -150,10 +129,8 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 		wchar_t wbuffer[128];
 		size_t printed;
 		mbstowcs_s(&printed, wbuffer, buffer, sizeof(wbuffer));
-		deviceContext->DrawText(wbuffer,wcslen(wbuffer),textFormatBody,D2D1::RectF((float)x,(float)y,fsize.width,fsize.height),solidBrushColor);
+		testRenderer->PrintString(wbuffer,x,y,D2D1::ColorF(1,1,1,1));
 	}
-	textFormatBody->Release();
-	solidBrushColor->Release();
 }
 
 void DebugDraw::DrawString(const b2Vec2& p, const char *string, ...)

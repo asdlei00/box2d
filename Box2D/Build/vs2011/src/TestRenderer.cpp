@@ -14,6 +14,7 @@ TestRenderer ^TestRenderer::m_instance = nullptr;
 
 TestRenderer::TestRenderer()
 {
+	textFormatBody=NULL;
 	m_instance = this;
 	m_enableText = true;
 	m_beginPrimitive = false;
@@ -50,23 +51,23 @@ void TestRenderer::CreateWindowSizeDependentResources()
 	//XMStoreFloat4x4(&m_constantBufferData.projection,XMMatrixOrthographicRH(m_windowBounds.Width,m_windowBounds.Height,-1,1));
 	//m_basicEffect->SetProjection(XMLoadFloat4x4(&m_constantBufferData.projection));
 }
-void TestRenderer::ComputeOrthoMatrixRH(int width,int height,float znear,float zfar)
+void TestRenderer::ComputeOrthoMatrixRH(float width,float height,float znear,float zfar)
 {
 	memset(projectionMatrix,0,sizeof(projectionMatrix));
-	projectionMatrix[0]=2.0f/(float)(width);			//Clip space goes from -1 to 1 on the x axis.
-	projectionMatrix[5]=2.0f/(float)(height);			//Clip space goes from -1 to 1 on the y axis.
+	projectionMatrix[0]=2.0f/(width);			//Clip space goes from -1 to 1 on the x axis.
+	projectionMatrix[5]=2.0f/(height);			//Clip space goes from -1 to 1 on the y axis.
 	projectionMatrix[10]=1.0f/(znear-zfar);				//Clip space goes from 0 to 1 on the z axis.
 	projectionMatrix[14]=znear/(znear/zfar);
 	projectionMatrix[15]=1.0f;
 }
-void TestRenderer::ComputeOrthoMatrixOrthoOffCenterRH(int l,int r,int b,int t,float znear,float zfar)
+void TestRenderer::ComputeOrthoMatrixOrthoOffCenterRH(float l,float r,float b,float t,float znear,float zfar)
 {
 	memset(projectionMatrix,0,sizeof(projectionMatrix));
-	projectionMatrix[0]=2.0f/(float)(r-l);			//Clip space goes from -1 to 1 on the x axis.
-	projectionMatrix[5]=2.0f/(float)(t-b);			//Clip space goes from -1 to 1 on the y axis.
+	projectionMatrix[0]=2.0f/(r-l);			//Clip space goes from -1 to 1 on the x axis.
+	projectionMatrix[5]=2.0f/(t-b);			//Clip space goes from -1 to 1 on the y axis.
 	projectionMatrix[10]=1.0f/(znear-zfar);			//Clip space goes from 0 to 1 on the z axis.
-	projectionMatrix[12]=(float)(l+r)/(float)(l-r);
-	projectionMatrix[13]=(float)(t+b)/(float)(b-t);
+	projectionMatrix[12]=(l+r)/(l-r);
+	projectionMatrix[13]=(t+b)/(b-t);
 	projectionMatrix[14]=znear/(znear/zfar);
 	projectionMatrix[15]=1.0f;
 }
@@ -182,9 +183,15 @@ D2D1_POINT_2F TestRenderer::TransformPoint(D2D1_POINT_2F& point,float* matrix)
 	float w = point.x*matrix[3]+point.y*matrix[7]+matrix[11]+matrix[15];
 	if(w!=0.0f)
 	{
+		//This is not really needed for Ortho projection
+		//since that last column of the matrix will be 1.
+		//But i just have it in there so just in case if the transform change in the future
+		//from ortho to perspective.
 		x/=w;
 		y/=w;
 	}
+	//Coordinate should now be in clipped space.
+	//Convert it from clip space to screen space.
 	pr.x=((1.0f+x)*size.width)*0.5f;
 	pr.y=size.height-(((1.0f+y)*size.height)*0.5f);
 	return pr;
@@ -210,6 +217,29 @@ void TestRenderer::DrawTriangle(D2D1_POINT_2F& point0,D2D1_POINT_2F& point1,D2D1
 	colorBrush->Release();
 	geometrySink->Release();
 	pathGeometry->Release();
+}
+//Print an string to the screen.
+void TestRenderer::PrintString(wchar_t* text,int x,int y,D2D1_COLOR_F& color)
+{
+	if(!textFormatBody)
+	{
+		Microsoft::WRL::ComPtr<IDWriteFactory1> writeFactory=GetWriteFactory();
+		writeFactory->CreateTextFormat(
+				L"Segoe UI",
+				nullptr,
+				DWRITE_FONT_WEIGHT_LIGHT,
+				DWRITE_FONT_STYLE_NORMAL,
+				DWRITE_FONT_STRETCH_NORMAL,
+				24,
+				L"en-us",
+				&textFormatBody
+				);
+	}
+	ID2D1SolidColorBrush* colorBrush=NULL;
+	m_d2dContext->CreateSolidColorBrush(color,&colorBrush);
+	D2D1_SIZE_F size = m_d2dContext->GetSize();
+	m_d2dContext->DrawText(text,wcslen(text),textFormatBody,D2D1::RectF((float)x,(float)y,(float)size.width,(float)size.height),colorBrush);
+	colorBrush->Release();
 }
 //Draw an quad.
 void TestRenderer::DrawQuad(D2D1_POINT_2F& point0,D2D1_POINT_2F& point1,D2D1_POINT_2F& point2,D2D1_POINT_2F& point3,D2D1_COLOR_F& color)
