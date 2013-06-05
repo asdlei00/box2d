@@ -135,7 +135,7 @@ void DebugDraw::DrawString(int x, int y, const char *string, ...)
 
 void DebugDraw::DrawString(const b2Vec2& p, const char *string, ...)
 {
-	DrawString((int)p.x,(int)p.y,string);
+	//DrawString((int)p.x,(int)p.y,string);
 }
 
 
