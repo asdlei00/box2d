@@ -44,9 +44,6 @@ DirectXPage::DirectXPage() :
 
 	Window::Current->CoreWindow->KeyDown += 
 		ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &DirectXPage::OnKeyDown);
-	
-	Window::Current->CoreWindow->PointerWheelChanged +=
-		ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &DirectXPage::OnPointerWheelChanged);
 
 	Window::Current->CoreWindow->KeyUp += 
 		ref new TypedEventHandler<CoreWindow^, KeyEventArgs^>(this, &DirectXPage::OnKeyUp);
@@ -189,9 +186,10 @@ void DirectXPage::OnKeyDown(CoreWindow^ sender, KeyEventArgs^ args)
 	}
 }  
 
-void DirectXPage::OnPointerWheelChanged(CoreWindow^ sender, PointerEventArgs^ args)
+void DirectXPage::OnPointerWheelChanged(Object^ sender, PointerRoutedEventArgs ^ args)
 {
-	int direction = args->CurrentPoint->Properties->MouseWheelDelta;
+	int direction = args->GetCurrentPoint(nullptr)->Properties->MouseWheelDelta;
+
 	if (direction > 0)
 	{
 		m_renderer->ZoomOut();

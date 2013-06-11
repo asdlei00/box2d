@@ -8,6 +8,7 @@
     mc:Ignorable="d">
     <SwapChainBackgroundPanel x:Name="SwapChainPanel" 
                               PointerMoved="OnPointerMoved" 
+                              PointerWheelChanged="OnPointerWheelChanged" 
                               PointerPressed="OnPointerPressed" 
                               PointerReleased="OnPointerReleased">
 
