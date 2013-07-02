@@ -1,5 +1,0 @@
-C:\Users\Administrator\Documents\GitHub\box2d-pr\Box2D\Build\vs2010\TestbedWinRT\DirectXTK\MakeSpriteFont\bin\Release\MakeSpriteFont.exe
-C:\Users\Administrator\Documents\GitHub\box2d-pr\Box2D\Build\vs2010\TestbedWinRT\DirectXTK\MakeSpriteFont\bin\Release\MakeSpriteFont.pdb
-C:\Users\Administrator\Documents\GitHub\box2d-pr\Box2D\Build\vs2010\TestbedWinRT\DirectXTK\MakeSpriteFont\obj\Release\MakeSpriteFont.csprojResolveAssemblyReference.cache
-C:\Users\Administrator\Documents\GitHub\box2d-pr\Box2D\Build\vs2010\TestbedWinRT\DirectXTK\MakeSpriteFont\obj\Release\MakeSpriteFont.exe
-C:\Users\Administrator\Documents\GitHub\box2d-pr\Box2D\Build\vs2010\TestbedWinRT\DirectXTK\MakeSpriteFont\obj\Release\MakeSpriteFont.pdb
